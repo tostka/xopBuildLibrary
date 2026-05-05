@@ -1,0 +1,173 @@
+﻿#region REPAIR_FILEENCODINGMIXED ; #*------v FUNCTION repair-FileEncodingMixed v------
+function repair-FileEncodingMixed {
+        <#
+        .SYNOPSIS
+        repair-FileEncodingMixed.ps1 - Given the path to a problematic file - one that switches encoding mid-file (symptom: suddenly pads every character with spaces (NUL AKA \0 chars)) - this script renames the original file to suffix _MIXEDENCODING.[orig extension], and runs a replace '\0','' on the original content, then writtes updated content back to original file name, with UTF8 explicit encoding.
+        .NOTES
+        Version     : 0.1.3
+        Author      : Todd Kadrie
+        Website     :	http://www.toddomation.com
+        Twitter     :	@tostka / http://twitter.com/tostka
+        CreatedDate : 2025-09-03
+        FileName    :
+        License     : MIT License
+        Copyright   : (c) 2025 Todd Kadrie
+        Github      : https://github.com/tostka/verb-IO
+        Tags        : Powershell,Filesystem,Encoding,Maintenance,Repair
+        AddedCredit : REFERENCE
+        AddedWebsite:	URL
+        AddedTwitter:	URL
+        REVISIONS
+        * 9:13 AM 10/9/2025 repair-FileEncodingMixed: restored lost -replace \0 _actual fix_ from the set-content line.
+        * 10:57 AM 9/3/2025 fixed typo, add missing skip return original path to pipe;
+             made the BackupFileNameSuffix an overridable param;
+            change bufile suffix BROKENENCODING -> MIXEDENCODING;
+            ren:repair-FileEncodingMulti -> repair-FileEncodingMixed, more descriptive; 
+            added internal pretest for \0 chars, with skip comment (can safely run at all files, skips undamaged); 
+            flipped $Path from string[] -> system.io.fileinfo[] fileinfo array ; still have to validate: it will class non-existant files (with distinctive 12/31/1600 timestamps)
+            updated CBH w demo that pretests for damage before autorunning fix; 
+            updated Alias fix-encoding -> fix-encodingMulti; made -Path mandatory.
+        * 3:44 PM 9/2/2025 init 
+        .DESCRIPTION
+        repair-FileEncodingMixed.ps1 - Given the path to a problematic file - one that switches encoding mid-file (symptom: suddenly pads every character with spaces (NUL AKA \0 chars)) - this script renames the original file to suffix _MIXEDENCODING.[orig extension], and runs a replace '\0','' on the original content, then writtes updated content back to original file name, with UTF8 explicit encoding        
+        .PARAMETER Path
+        Array of file paths to text files to be checked for mixed encoding issues[-Path C:\pathto\file.txt]
+        .PARAMETER EncodingTarget
+        Encoding to be coerced on targeted files (defaults to UTF8, supports:ASCII|BigEndianUnicode|BigEndianUTF32|Byte|Default|OEM|String|Unicode|UTF7|UTF8|UTF32)[-EncodingTarget ASCII]
+        .PARAMETER BackupFileNameSuffix
+        Suffix tag that backupfilename is built with (defaults to 'MIXEDENCODING', override for other variant output)[-BackupFileNameSuffix BADENCODING]
+        .PARAMETER Whatif
+        Parameter to run a Test no-change pass [-Whatif switch]
+        .INPUTS
+        Accepts piped input Path leaf filespec array
+        .OUTPUTS
+        None. Returns no objects or output (.NET types)
+        .EXAMPLE
+        PS> write-verbose "Test for symptom of break ('\0' chars in file)" ; 
+        PS> if(gci $filepath | select-string '\0'){ 
+        PS>     write-warning "$($_):`n has BROKEN ENCODING! (contains `'\0`' chars)`nRunning Fix:repair-FileEncodingMult()..."  ; 
+        PS>     repair-FileEncodingMult -path $filepath -verbose ; 
+        PS> } else {write-host -foregroundcolor green "$($_):`n has NO Encoding issues (no  `'\0`' chars)" } ;  
+        Demo that pretests for damaged files, and autoruns repair.
+        .EXAMPLE
+        PS> if($logfile = gci ".\\InstallCache\$($env:COMPUTERNAME)_Install-Exchange15-TTC.ps1_*.log"  | ?{$_.basename -match '\d{4}\d{2}\d{2}\d{6}$'} | repair-FileEncodingMixed){gc $logfile | select -last 100 } ;  
+        Demo resolving & autorepairing a log file, before parsing & tailing most recent log entries to console, for review.
+        .LINK
+        https://github.com/tostka/verb-io
+        #>
+        # VALIDATORS: [ValidateNotNull()][ValidateNotNullOrEmpty()][ValidateLength(24,25)][ValidateLength(5)][ValidatePattern("some\sregex\sexpr")][ValidateSet("USEA","GBMK","AUSYD")][ValidateScript({Test-Path $_ -PathType 'Container'})][ValidateScript({Test-Path $_})][ValidateRange(21,65)][ValidateCount(1,3)]
+        [CmdletBinding()]
+        [Alias('fix-encodingMulti')]
+        PARAM(
+            [Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true,HelpMessage="Array of file paths to text files to be checked for mixed encoding issues[-Path C:\pathto\file.txt]")]
+                [ValidateScript({Test-Path $_ -pathtype leaf})]
+                [system.io.fileinfo[]] $Path,
+            [Parameter(HelpMessage="Encoding to be coerced on targeted files (defaults to UTF8, supports:ASCII|BigEndianUnicode|BigEndianUTF32|Byte|Default|OEM|String|Unicode|UTF7|UTF8|UTF32)[-EncodingTarget ASCII]")]
+                [ValidateSet('ASCII','BigEndianUnicode','BigEndianUTF32','Byte','Default','OEM','String','Unicode','UTF7','UTF8','UTF32')]
+                [string]$EncodingTarget= 'UTF8',
+            [Parameter(HelpMessage="Suffix tag that backupfilename is built with (defaults to 'MIXEDENCODING', override for other variant output)[-BackupFileNameSuffix BADENCODING]")]        
+                [string]$BackupFileNameSuffix= 'MIXEDENCODING',         
+            [Parameter(HelpMessage="Whatif Flag  [-whatIf]")]
+                [switch] $whatIf
+        ) ;
+        BEGIN{
+            ${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name ;
+            $sBnr="#*======v $($CmdletName): v======" ;
+            $smsg = $sBnr ;
+            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } #Error|Warn|Debug
+            else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+        }  
+        PROCESS{
+            $ttl=($Path|measure).count ;
+            $smsg="Processing $($ttl) file(s)..." ;
+            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info } #Error|Warn|Debug
+            else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+            $procd=0 ;
+            foreach($Pth in $Path) {                
+                $procd++ ;
+                $smsg = $sBnrS="`n#*------v PROCESSING : ($($procd)/$($ttl)): $($Pth.fullname ) v------" ; 
+                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H2 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                TRY {
+                    $error.clear() ;
+                    #$sfile = (get-childitem -path $Pth -ea STOP)
+                    $sfile = $Pth
+                    if($Pth | select-string '\0'){
+                        $smsg = "CONFIRMED: $($sfile.fullname) HAS MIXED ENCODING (contains `'\0`' chars)" ; 
+                        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} 
+                        else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
+                        $bufile = join-path $sfile.directory -child "$($sfile.basename)_$($BackupFileNameSuffix)$($sfile.extension)" -ea STOP ;  
+                        if(test-path $bufile){ 
+                            write-host -foregroundcolor yellow "(pre-existing bu, appending _hhmm)" ; 
+                            $bufile = $bufile.Replace('.log',"_$(get-date -format 'HHmm').log")
+                        }
+                        $smsg = "Backing up source file to:`n$($bufile)..." ; 
+                        if($VerbosePreference -eq "Continue"){if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level VERBOSE } 
+                        else{ write-verbose "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; } ;                    
+                        $Pth | rename-item -newname $bufile -verbose -EA STOP -whatif:$($whatif);                         
+                        if($whatif){
+                            $workfile = $sfile  ;
+                        }else{
+                            $workfile = $bufile ; 
+                        } ;     
+                        $content = (Get-Content -Raw $workfile -ErrorAction STOP)  ;                             
+                        if($whatif){$smsg = "-WHATIF:$($whatif):"}else{$smsg = "" }  ; 
+                        $smsg += "SourceFile was:`n$($sfile.fullname)" ; 
+                        $smsg += "`nBackupFile is:`n$($bufile)" ;
+                        $smsg += "`nWriting repaired file back to:`n$($sfile.fullname)" ;
+                        $smsg += "`n(returning updated file path to pipeline)" ; 
+                        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info } #Error|Warn|Debug
+                        else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                        $content -replace '\0', '' | set-content -path $sfile.fullname  -Encoding $EncodingTarget -verbose -ErrorAction STOP -whatif:$($whatif) ;
+                        $sfile.fullname | write-output ;
+                        
+                    } else {
+                        $smsg = "SKIPPING:`n$($sfile.fullname) has *NO* mixed-encoding (does *not* contain '\0' chars)" ; 
+                        $smsg += "`n(returning original unmodified file path to pipeline)" ;
+                        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info } 
+                        else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                        #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                        $sfile.fullname | write-output ;
+                    } ;                                             
+                } CATCH {
+                    $ErrTrapd=$Error[0] ;
+                    $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
+                    if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN } #Error|Warn|Debug
+                    else{ write-warning "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;                    
+                } ;
+                $smsg = "$($sBnrS.replace('-v','-^').replace('v-','^-'))" ;
+                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H2 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+            } ;  # loop-E $item ;
+        } ; # PROC-E
+        END {
+            $smsg = "$($sBnr.replace('=v','=^').replace('v=','^='))" ;
+            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } #Error|Warn|Debug
+            else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+        } ;  # END-E
+    }
+#endregion REPAIR_FILEENCODINGMIXED ; #*------^ END FUNCTION repair-FileEncodingMixed  ^------
+
+# SIG # Begin signature block
+# MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUvv6eb6aA4vSdn7qpe7C/91c7
+# nm2gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
+# Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
+# ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
+# a+NnFYNRPPa8Bnm071ohGe27jNWKPVUbDfd0OY2sqCBQCEFVb5pqcIECRRnlhN5H
+# +EEJmm2x9AU0uS7IHxHeUo8fkW4vm49adkat5gAoOZOwbuNntBOAJy9LCyNs4F1I
+# KKphP3TyDwe8XqsEVwB2m9FPAgMBAAGjdjB0MBMGA1UdJQQMMAoGCCsGAQUFBwMD
+# MF0GA1UdAQRWMFSAEL95r+Rh65kgqZl+tgchMuKhLjAsMSowKAYDVQQDEyFQb3dl
+# clNoZWxsIExvY2FsIENlcnRpZmljYXRlIFJvb3SCEGwiXbeZNci7Rxiz/r43gVsw
+# CQYFKw4DAh0FAAOBgQB6ECSnXHUs7/bCr6Z556K6IDJNWsccjcV89fHA/zKMX0w0
+# 6NefCtxas/QHUA9mS87HRHLzKjFqweA3BnQ5lr5mPDlho8U90Nvtpj58G9I5SPUg
+# CspNr5jEHOL5EdJFBIv3zI2jQ8TPbFGC0Cz72+4oYzSxWpftNX41MmEsZkMaADGC
+# AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
+# Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
+# AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQ7XR39
+# HwQ20I2z1kHweNZeOiQ9YTANBgkqhkiG9w0BAQEFAASBgHlEPAYPH3mOviFx2GiS
+# TGRRgfjFwhZYgfN5BsreskxdxRRqxtdsSuBiSzgiBbUtbz2nRa3ewMrRqpcZ6i1V
+# yZq1OMrbZI89ePOts9NopekX9Ijgm3yZs7XNOSEwLweaXM/KdIyvsUunzuEHYPwx
+# VbZTVouQpbWCOzN8PdBcUN+n
+# SIG # End signature block

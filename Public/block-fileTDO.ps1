@@ -1,0 +1,182 @@
+﻿#region BLOCK_FILETDO ; #*------v FUNCTION block-fileTDO v------
+Function block-fileTDO {
+        <#
+        .SYNOPSIS
+        block-fileTDO - Mock up a conterpart for Microsoft.PowerShell.Utility\unblock-file(), that sets a 'Block'; adding a ZoneIdentifier alternate data stream to designated file
+        .NOTES
+        Version     : 0.0.1
+        Author      : Todd Kadrie
+        Website     : http://www.toddomation.com
+        Twitter     : @tostka / http://twitter.com/tostka
+        CreatedDate : 2025-09-09
+        FileName    : block-fileTDO
+        License     : MIT License
+        Copyright   : (c) 2025 Todd Kadrie
+        Github      : https://github.com/tostka/verb-io
+        Tags        : Powershell,FileSystem,Security,Block
+        AddedCredit : REFERENCE
+        AddedWebsite: URL
+        AddedTwitter: URL
+        REVISIONS
+        * 4:30 PM 9/15/2025 block-fileTDO(): updated CBH with set-content -stream info (only writes the stream around the file, not the entire file)
+        * 11:13 AM 9/11/2025 init, creating for testing of test-fileblockstatusTDO() & unblock-file in dynamic iflv code
+        .DESCRIPTION
+        block-fileTDO - Mock up a conterpart for Microsoft.PowerShell.Utility\unblock-file(), that sets a 'Block'; adding a ZoneIdentifier alternate data stream to designated file
+
+        Note: This uses set-content with the -stream parameter to add a Zone.Identifier stream with the ZoneID=3 spec:
+        -stream *only writes the targeted stream data*, even on huge files. 
+        Point it at a 6gb .ISO, you don't sc 6gb of data to set the ZoneID, just a few k of stream data.
+
+        .PARAMETER Path
+        Specifies the files to block. Wildcard characters are supported.[-path c:\pathto\file.ext]
+        .PARAMETER LiteralPath
+        Specifies the files to block. Unlike Path , the value of the LiteralPath parameter is used exactly as it is typed. No characters are interpreted as wildcards. If the path includes escape characters, enclose it in single quotation marks (`'`). Single quotation marks tell PowerShell not to interpret anycharacters as escape sequences. [-LiteralPath c:\pathto\file.ext]
+        .PARAMETER Force
+        Force (Confirm-override switch, overrides ShouldProcess testing, executes somewhat like legacy -whatif:`$false)[-force]        
+        .INPUTS
+        System.String
+        .OUTPUTS
+        System.String - Full path of files that are marked as 'Blocked'.
+        .EXAMPLE
+        PS> Get-ChildItem -Path "C:\Downloads" | block-fileTDO
+        .EXAMPLE
+        PS> gci d:\cab\* -include @('*.ps1','*.psm1')  | block-fileTDO | Unblock-File -verbose ;    
+        .LINK
+        https://learn.microsoft.com/en-us/windows/win32/shell/zone-identifiers
+        .LINK
+        https://github.com/tostka/verb-IO        
+        #>
+        [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'HIGH')] 
+        [Alias('Block-File')]
+        PARAM(
+            [Parameter(Mandatory = $False,Position = 0,ValueFromPipeline = $True, HelpMessage = "Specifies the files to block. Wildcard characters are supported.[-path c:\pathto\file.ext]")]
+                #[Alias('PsPath')]
+                #[ValidateScript({Test-Path $_ -PathType 'Container'})]
+                #[ValidateScript({Test-Path $_})]
+                [string[]]$Path,
+            [Parameter(HelpMessage="Specifies the files to block. Unlike Path , the value of the LiteralPath parameter is used exactly as it is typed. No characters are interpreted as wildcards. If the path includes escape characters, enclose it in single quotation marks (`'`). Single quotation marks tell PowerShell not to interpret anycharacters as escape sequences. [-LiteralPath c:\pathto\file.ext]")]
+                [String[]]$LiteralPath,
+            [Parameter(HelpMessage="Force (Confirm-override switch, overrides ShouldProcess testing, executes somewhat like legacy -whatif:`$false)[-force]")]
+                [switch]$Force
+            #[Parameter(HelpMessage="Shows what would happen if the cmdlet runs. The cmdlet is not run.[-whatIf]")]
+            #    [switch] $whatIf
+            # when using SupportsShouldProcess, $whatif & $Confirm are automatic, manual def of either throws: get-help : A parameter with the name 'WhatIf' was defined multiple times for the command.
+        )
+        BEGIN {
+            if(-not $Path -AND -not $LiteralPath){
+                $smsg = "NEITHER -Path or -LiteralPath specified: Please specify one or the other." ; 
+                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} 
+                else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
+                throw $smsg ; 
+                break ; 
+            } ; 
+            if($Path -AND $LiteralPath){
+                $smsg = "BOTH -Path & -LiteralPath specified: Please specify one or the other." ; 
+                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} 
+                else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
+                throw $smsg ; 
+                break ; 
+            } ; 
+            $ZoneIdentifierStream = 'Zone.Identifier'
+            $BlockedZoneId = 3
+            #$data = "[ZoneTransfer]`nZoneId=3" ; 
+            $data = "[ZoneTransfer]`nZoneId=$($BlockedZoneId)" ; 
+        }
+        PROCESS {
+            if($Path){ $thisitem = $Path}
+            elseif($LiteralPath){$thisitem = $LiteralPath}
+            else{
+                $smsg = "NEITHER -Path or -LiteralPath specified: Please specify one or the other." ; 
+                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} 
+                else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
+                throw $smsg ; 
+                break ; 
+            } 
+            foreach($titem in $thisitem){
+                TRY {
+                    $pltGCI = @{ErrorAction = 'SilentlyContinue'}
+                    $pltDo = @{Stream = "Zone.Identifier" ;Value = $data ;ErrorAction = 'Stop'}
+                    # If it's a directory, enumerate files
+                    if ($item.PSIsContainer) {                        
+                        $pltGCI.add('Recurse',$true) ; 
+                        $pltGCI.add('File',$true ) ;
+                        if ($LiteralPath) {
+                            $pltGCI.add('LiteralPath',$titem.FullName ) ; 
+                                                       
+                        }else{
+                            $pltGCI.add('Path',$titem.FullName ) ;                            
+                        } ; 
+                        $smsg = "Get-ChildItem w`n$(($pltGCI|out-string).trim())" ; 
+                        if($VerbosePreference -eq "Continue"){if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level VERBOSE } 
+                        else{ write-verbose "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; } ; 
+                        $files = Get-ChildItem @pltGCI ; 
+                    } else {
+                        $files = @($titem)
+                    }
+                    foreach ($file in $files) {
+                        if ($LiteralPath) {
+                            $pltDo.add('LiteralPath',$titem )                        
+                        }else{
+                            $pltDo.add('Path',$titem )
+                        } ;
+                        $smsg = "set-Content w`n$(($pltDo|out-string).trim())" ; 
+                        if($VerbosePreference -eq "Continue"){if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level VERBOSE } 
+                        else{ write-verbose "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; } ; 
+                        #-=-=-=-=-=-=-=-=
+                        if ($Force -or $PSCmdlet.ShouldProcess($titem, 'set-Content: Should Process?')) {
+                            TRY{
+                                set-Content @pltDo ;   
+                            } CATCH {
+                                $ErrTrapd=$Error[0] ;
+                                $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
+                                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                            } ;
+                        } elseif($whatifpreference.IsPresent){
+                            #$smsg = "This code execs on -whatif (run no-impact perms/deps tests etc here)" ;
+                            #if($verbose){if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level VERBOSE} else{ write-verbose "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; } ;
+                        } else {;
+                            $smsg = "(DECLINED ShouldProcess PROMPT! (NON -whatif))" ;
+                            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Prompt }
+                            else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                        } ; 
+                        #-=-=-=-=-=-=-=-=                       
+                    }
+                } CATCH {
+                    $ErrTrapd=$Error[0] ;
+                    $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
+                    if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                }
+            } ;  # loop-E
+        }
+        END {
+            # No cleanup needed
+        }
+    }
+#endregion BLOCK_FILETDO ; #*------^ END FUNCTION block-fileTDO  ^------
+
+# SIG # Begin signature block
+# MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUZys3nji/w8016Dgbc+1Ctjuq
+# K2OgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
+# Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
+# ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
+# a+NnFYNRPPa8Bnm071ohGe27jNWKPVUbDfd0OY2sqCBQCEFVb5pqcIECRRnlhN5H
+# +EEJmm2x9AU0uS7IHxHeUo8fkW4vm49adkat5gAoOZOwbuNntBOAJy9LCyNs4F1I
+# KKphP3TyDwe8XqsEVwB2m9FPAgMBAAGjdjB0MBMGA1UdJQQMMAoGCCsGAQUFBwMD
+# MF0GA1UdAQRWMFSAEL95r+Rh65kgqZl+tgchMuKhLjAsMSowKAYDVQQDEyFQb3dl
+# clNoZWxsIExvY2FsIENlcnRpZmljYXRlIFJvb3SCEGwiXbeZNci7Rxiz/r43gVsw
+# CQYFKw4DAh0FAAOBgQB6ECSnXHUs7/bCr6Z556K6IDJNWsccjcV89fHA/zKMX0w0
+# 6NefCtxas/QHUA9mS87HRHLzKjFqweA3BnQ5lr5mPDlho8U90Nvtpj58G9I5SPUg
+# CspNr5jEHOL5EdJFBIv3zI2jQ8TPbFGC0Cz72+4oYzSxWpftNX41MmEsZkMaADGC
+# AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
+# Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
+# AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQzECZ7
+# 8l3QFmbgFpNItxuUw1d7VTANBgkqhkiG9w0BAQEFAASBgCM0PQfpGrWs+Sxv2VVL
+# fDmtOq0cvAVmTEJ2xkJVu1sFTsV7EVdcReccp1TbnCbcYFD9CaWH4rIfik0/nN7r
+# X6kgZbrjbI9+rVYkJSY7tZjKPCsCWCOa3fa5GlcBvFO9DFLfxWLQkYptOH3IdEWP
+# h8sGakUXFVmNU+qrC5FdxZGX
+# SIG # End signature block

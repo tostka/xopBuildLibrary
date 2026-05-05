@@ -1,0 +1,349 @@
+﻿#region STOP_EX16MAINTENANCEMODE ; #*------v FUNCTION Stop-ex16MaintenanceMode v------
+function Stop-ex16MaintenanceMode{
+        <#
+        .SYNOPSIS
+        Stop-ex16MaintenanceMode.ps1 - Takes a Microsoft Exchange Server 2016 computer out of maintenance mode.
+        .NOTES
+        Version     : 0.0.1
+        Author      : Todd Kadrie
+        Website     : http://www.toddomation.com
+        Twitter     : @tostka / http://twitter.com/tostka
+        CreatedDate : 2025-03-19
+        FileName    : Stop-ex16MaintenanceMode.ps1
+        License     : MIT License
+        Copyright   : (c) 2025 Todd Kadrie
+        Github      : https://github.com/tostka/verb-XXX
+        Tags        : Powershell
+        AddedCredit : PietroCiaccio
+        AddedWebsite: https://github.com/PietroCiaccio/
+        AddedTwitter: URL
+        REVISIONS
+        * 2:35 PM 12/2/2025 spliced in re-import connect-xopLocalManagementShell code
+        * 5:53 PM 8/16/2025 Stop-ex16MaintenanceMode: add Edge detection support; code to do the $isDAG test within the function (and not inherited)
+        * 2:30 PM 3/26/2025 merge PietroCiaccio's Disable-EPMaintenanceMode with my updates under Start-ex16MaintenanceMode.ps1
+        * 9:09 AM 3/26/2025 added ipsn post connect-ExchangeServer() call (wasn't including import/non-functional [headscratch]); beyond that, used wo issues on 1st of the Ex16 builds
+        * 8/12/2020 Pietro Ciaccio's PSG-posted ExchangePowerShell module, v0.11.0
+        .DESCRIPTION
+        Stop-ex16MaintenanceMode.ps1 - Takes a Microsoft Exchange Server 2016 computer out of maintenance mode. CmdLet will: 
+
+                - set all server component states to active
+                - resume the cluster node
+                - enable database activation on the server
+                - resume passive database copies
+                - resume transport
+                - restart transport services 
+
+        Based on PietroCiaccio's github-posted function from his ExchangePowerShell module
+        https://github.com/PietroCiaccio/ExchangePowerShell
+        ... and as posted to PSG:
+        https://www.powershellgallery.com/packages/ExchangePowerShell/0.2.2/Content/ExchangePowerShell.psm1
+        Appears the PSG is 0.11.0 (current version) 	575,293 	8/12/2020
+        As is github: (from .psm1 header):
+
+        ```text
+        # EP (ExchangePowerShell) Powershell Module 0.11.0 - Oct 14, 2021, 
+        # Author: Pietro Ciaccio | LinkedIn: https://www.linkedin.com/in/pietrociaccio | Twitter: @PietroCiac
+        # PSG copy: https://www.powershellgallery.com/packages/ExchangePowerShell/0.11.0 | 0.11.0 (current version) 	575,293 	8/12/2020
+        # => the avail gh vers is as current as they come (below)
+        ```
+    
+        issue: Ex16 Connect-ExchangeServer -auto -ClientApplication:ManagementShell"
+        If it can't find the local - services down - it WILL DIVERT INTO older EXCH versions!
+        WHICH DOESN'T SEE EX16 SERVERS IN GET-EXCHANGESERVER!
+        So we need to version check the session we pull (and use the -serverFQDN param of connect-Exchangeserver()), to ensure we got the server we want.
+
+            get-exchangeserver [server] returns Admindisplayversion like : 
+            Version nn.n (Build nnn.n)
+            The Buildnumber Shortstring can be constructed by combining the 'Version nn.n' digits with the '(Build nnn.n)' digits: nn.n.nnn.n
+    
+                [regex]::Matches($AdminDisplayVersion,"(\d*\.\d*)").value -join '.'
+
+            Do matching on the nn.n for each Major rev, if you want to be sure of your supported commandset targets
+                - 2019, 'Version 15.2'
+                - 2016, 'Version 15.1'
+                - 2013, 'Version 15.0'
+                - 2010sp3, 'Version 14.3'
+                - 2010sp2, 'Version 14.2'
+                - 2010sp1, 'Version 14.1'
+                - 2010, 'Version 14.0'
+    
+        .PARAMETER Identity ; 
+        Specify the identity of the Exchange Server. This can be piped from Get-ExchangeServer or specified explicitly using a string.
+        .PARAMETER RedirectionTarget ; 
+        Specify the identity of the Exchange Server you wish to redirect pending messages to.
+        .PARAMETER MoveActiveDatabaseCopies ; 
+        Specify whether to move active database copies to other DAG members, if possible. The default is false.
+        .INPUTS
+        None. Does not accepted piped input.(.NET types, can add description)
+        .OUTPUTS
+        None. Returns no objects or output (.NET types)
+        System.Boolean
+        [| get-member the output to see what .NET obj TypeName is returned, to use here]
+        .EXAMPLE
+        PS> .\Stop-ex16MaintenanceMode.ps1 -whatif -verbose
+        EXSAMPLEOUTPUT
+        Run with whatif & verbose
+        .EXAMPLE
+        PS> .\Stop-ex16MaintenanceMode.ps1
+        EXSAMPLEOUTPUT
+        EXDESCRIPTION
+        .LINK
+        https://github.com/tostka/powershellBB/
+        #>
+        # #Requires -PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
+        [CmdletBinding()]
+        Param (
+            [Parameter(mandatory=$false,valuefrompipelinebypropertyname=$true,
+                HelpMessage="Specify the identity of the Exchange Server. This can be piped from Get-ExchangeServer or specified explicitly using a string")]
+                [ValidateNotNullOrEmpty()]
+                [PSCustomObject]$Identity=$env:computername
+        ) ; 
+        BEGIN{
+            #region CONNECT_XOPLOCAL ; #*------v connect-XopLocal v------
+            $tcmdlet = 'Set-ServerComponentState' ;
+            $cmd = $null; $cmd = get-command $tcmdlet -erroraction 0 ;
+            if(-not $cmd){
+                if($xopconn = connect-XopLocalManagementShell){
+                    if($ExPSS = get-pssession | ? { $_.ComputerName -match "^$($env:computername)" -AND $_.ConfigurationName -eq 'Microsoft.Exchange' } | sort id -Descending | select -first 1 ){
+                        TRY{
+                            $cmd = $null; $cmd = get-command $tcmdlet -erroraction 0 ;
+                            if(-not $cmd){
+                                $smsg = "Missing $($cmdlet): re-importing PSSession..." ;
+                                if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                                    if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                                    #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                                } ;
+                                $ExIPSS = Import-PSSession $ExPSS -allowclobber -ea STOP ;
+                            } ;
+                            $cmd = $null; $cmd = get-command 'Get-OrganizationConfig' -erroraction stop ;
+                            $smsg = "Connected to: $($expss.computername)" ;
+                            if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                                #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                            } ;
+                        } CATCH {
+                            $ErrTrapd=$Error[0] ;
+                            $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
+                            if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
+                                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                            } ;
+                            BREAK ;
+                        } ;
+                    } ;
+                } else {
+                    $smsg = "NOT CONNECTED!"
+                    if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
+                        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent}
+                        else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                    } ;
+                    BREAK ;
+                } ;
+            } ;
+            #endregion CONNECT_XOPLOCAL ; #*------^ END connect-XopLocal ^------
+        } # BEG-E
+        PROCESS{
+            # Validate identity
+            # In the process block, the $input variable contains the current object in the pipeline.
+
+            if ($input) {            
+                $ExchangeServer = $null; $ExchangeServer = $input | Get-ex16ExchangeServerTDO
+            } else {
+                $ExchangeServer = $null; $ExchangeServer = Get-ex16ExchangeServerTDO -Identity $Identity
+            }
+
+            # Remove from maintenance mode
+            TRY {
+                $smsg = "Removing '$($ExchangeServer.fqdn.toupper())' from maintenance mode."
+                if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                    if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                    else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                    #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                } ;
+                Set-ServerComponentState -Identity $($ExchangeServer.fqdn) -Component ServerWideOffline -State Active -Requester Maintenance -erroraction stop
+            } CATCH {
+                throw $_.exception.message
+            } 
+            
+            if($ExchangeServer.ServerRole -eq 'Edge'){
+                $smsg = "(ServerRole:Edge, skipping DAG checks)" ;
+                if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                    if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                    #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                } ;
+            } else { 
+                # 5:52 PM 8/16/2025 doesn't have $isDAGmember populating code in this func - shouldn't be inheriting from external tests
+                # Determine DAG membership
+                $isDAGMember = $false
+                TRY {
+                    $RecipientServer = $null; $RecipientServer = Get-MailboxServer -identity $Exchangeserver.fqdn -erroraction stop
+                    if ($($RecipientServer | measure-object).count -ne 1) {
+                        $smsg = "$($($RecipientServer | measure-object).count) servers returned from query. Unable to continue."
+                        if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
+                            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                        } ;
+                        throw $smsg ;
+                    }
+                    if ($RecipientServer.DatabaseAvailabilityGroup -ne $null) {
+                        $isDAGMember = $true
+                    }
+                } CATCH {
+                    throw $_.exception.message
+                }
+
+                # DAG members only
+                if ($isDAGMember) {
+            
+                    # Resume cluster node
+                    $smsg = "Resuming cluster node."  
+                    if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                        else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                        #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                    } ;     
+                    TRY {
+                        invoke-command -ComputerName $($ExchangeServer.fqdn) -ScriptBlock {
+                            if ((Get-ClusterNode $($using:ExchangeServer.fqdn)).state -ne "Up") {
+                                Resume-ClusterNode $($using:ExchangeServer.fqdn)
+                            }     
+                        } -ErrorAction Stop | out-null
+                    } CATCH {
+                        throw $_.exception.message
+                    }
+
+                    # Move active database copies on
+                    TRY {
+                        $smsg = "Setting DatabaseCopyActivationDisabledAndMoveNow to 'False'."
+                        if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                            else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                        } ;
+                        Set-MailboxServer -Identity $($ExchangeServer.fqdn) -DatabaseCopyActivationDisabledAndMoveNow $false -erroraction Stop -confirm:$false
+                    } CATCH {
+                        throw $_.exception.message
+                    }
+
+                    # Set activation policy to unrestricted
+                    TRY {
+                        $smsg = "Setting DatabaseCopyAutoActivationPolicy to 'Unrestricted'."
+                        if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                            else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                        } ;
+                        Set-MailboxServer -Identity $($ExchangeServer.fqdn) -DatabaseCopyAutoActivationPolicy Unrestricted -erroraction Stop -confirm:$false
+                    } CATCH {
+                        throw $_.exception.message
+                    }   
+            
+                    # Resume passive copies
+                    TRY {                
+                        $Copies = $null; $Copies = Get-MailboxDatabaseCopyStatus *\$($ExchangeServer.name) | ? {$_.activecopy -eq $false}
+                        if ($Copies) {
+                            $smsg = "Resuming passive copies."
+                            if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                                else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                                #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                            } ;
+                            $Copies | . { process {
+                                    $_  | Resume-MailboxDatabaseCopy -confirm:$false -erroraction stop
+                                }                
+                            }
+                        }
+                    } CATCH {
+                        throw $_.exception.message
+                    }
+
+                }     
+            } ;  # if-E Edge/Mailbox detect
+            # Resume transport
+            $smsg = "Resuming transport."
+            if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+            } ;
+            TRY {
+                Set-ServerComponentState -Identity $($ExchangeServer.fqdn) -Component HubTransport -State Active -Requester Maintenance -erroraction stop
+            } CATCH {
+                throw $_.exception.message
+            }
+
+            # Restarting transport services
+            $smsg = "Restarting MSExchangeTransport and MSExchangeFrontEndTransport services."
+            if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+            } ;
+            $n = 0
+            Do {
+                TRY {
+                    invoke-command -ComputerName $($ExchangeServer.fqdn) -scriptblock {"MSExchangeTransport","MSExchangeFrontEndTransport" | restart-service -WarningAction SilentlyContinue} -ErrorAction stop -WarningAction SilentlyContinue
+                    break
+                } CATCH {
+                    $n++
+                    $smsg = "WARNING: Issue restarting MSExchangeTransport and MSExchangeFrontEndTransport services. Waiting 60 seconds then retrying." #-nonewline -ForegroundColor Yellow
+                    if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                        else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                        #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                    } ;
+                    Start-Sleep -Seconds 60
+                    $smsg = " Retry attempt $n of 3." #-ForegroundColor Yellow      
+                    if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                        else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                        #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+                    } ;
+                }
+                if ($n -eq 3) {
+                    $smsg = "Issue restarting MSExchangeTransport and MSExchangeFrontEndTransport services. Continuing."
+                    if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
+                        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent}
+                        else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                    } ;
+                    break
+                }
+            } while ($true)
+
+            $smsg = "Done." 
+            if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
+                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }
+                else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
+                #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
+            } ;
+  
+        
+        }  # PROC-E
+        END {
+        } ; 
+    }
+#endregion STOP_EX16MAINTENANCEMODE ; #*------^ END FUNCTION Stop-ex16MaintenanceMode  ^------
+
+# SIG # Begin signature block
+# MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUuudjnCzLZjuwebtWWWAfxUNF
+# JwOgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
+# Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
+# ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
+# a+NnFYNRPPa8Bnm071ohGe27jNWKPVUbDfd0OY2sqCBQCEFVb5pqcIECRRnlhN5H
+# +EEJmm2x9AU0uS7IHxHeUo8fkW4vm49adkat5gAoOZOwbuNntBOAJy9LCyNs4F1I
+# KKphP3TyDwe8XqsEVwB2m9FPAgMBAAGjdjB0MBMGA1UdJQQMMAoGCCsGAQUFBwMD
+# MF0GA1UdAQRWMFSAEL95r+Rh65kgqZl+tgchMuKhLjAsMSowKAYDVQQDEyFQb3dl
+# clNoZWxsIExvY2FsIENlcnRpZmljYXRlIFJvb3SCEGwiXbeZNci7Rxiz/r43gVsw
+# CQYFKw4DAh0FAAOBgQB6ECSnXHUs7/bCr6Z556K6IDJNWsccjcV89fHA/zKMX0w0
+# 6NefCtxas/QHUA9mS87HRHLzKjFqweA3BnQ5lr5mPDlho8U90Nvtpj58G9I5SPUg
+# CspNr5jEHOL5EdJFBIv3zI2jQ8TPbFGC0Cz72+4oYzSxWpftNX41MmEsZkMaADGC
+# AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
+# Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
+# AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQ7NsJq
+# wm40FjEW4hXt9IClweikZjANBgkqhkiG9w0BAQEFAASBgBmvABrn76954Ak2+7nv
+# aHdsd59DZsNLi54WXNFkip/nbudvq/Zdajw3hRQjd/JqwvpCMfZkztxNY0He+e5t
+# 6iJB076cwyTNMXwyt86VuUUluX1YjUjKjzoBdkW4BduXsRSUu+XmoIfUNtqDIELs
+# Mjq50KIwRhwJNZCmoYfUwADx
+# SIG # End signature block
