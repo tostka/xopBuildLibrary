@@ -1,5 +1,7 @@
-﻿#region TEST_PENDINGREBOOTTDO ; #*------v FUNCTION Test-PendingRebootTDO v------
-function Test-PendingRebootTDO{    
+﻿# Test-PendingRebootTDO.ps1
+
+    #region TEST_PENDINGREBOOTTDO ; #*------v Test-PendingRebootTDO v------#
+    function Test-PendingRebootTDO{    
         <#
         .SYNOPSIS
         Test-PendingRebootTDO - Check specified Server(s) registry for telltale PendingReboot registry keys. Returns a hashtable with IsPendingREboot and ComputerName for each machine checked. Requires localadmin permissions.
@@ -258,14 +260,13 @@ function Test-PendingRebootTDO{
                 }
             } # TRY-E
         } ;
-    }
-#endregion TEST_PENDINGREBOOTTDO ; #*------^ END FUNCTION Test-PendingRebootTDO  ^------
-
+    } ; 
+    #endregion TEST_PENDINGREBOOTTDO ; #*------^ END Test-PendingRebootTDO ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUSDvpdFKEltvih8178i7a99dE
-# DwagggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUbGVxl3PQBVKx7WF09aft3DvY
+# HeCgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -280,9 +281,9 @@ function Test-PendingRebootTDO{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSv5RSX
-# 5/oqy2Td3CGsUxhGpMiX2jANBgkqhkiG9w0BAQEFAASBgDuKM0eoWdsZoAKEbKa6
-# gX6hkOaz0lqu+gmhM56Z0Z8BIc+UH4WO9UutfE49b2uukW48/9uyFcSmddCNvN0d
-# 39ypTbHhvv9EJFXerryvm85OA5WBRz9TSuujRfdbyRCMjoOA5tLeQSPWNhW21Av4
-# eib6t+FQDiyVp9GakNvOQ2/Z
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBS2JHtC
+# c1yUbGBF+D5pGJalDpkV8DANBgkqhkiG9w0BAQEFAASBgJLR45m1kBRpsGkLvn6i
+# YFxPauZf9UO8smO8Ji0MvVU7tYRqbpyx0Oi3UP/5Rb12K2Kv5L5UVCBew8DZJah6
+# OvdTMbvrI7CZR0f8nUyaL17HYRn+S0ZtKbbU7VKw6kvtG4LB9fGAWc+VYqdBP8ZP
+# hNJA5WaBXRlaKDDIE90AVNy7
 # SIG # End signature block

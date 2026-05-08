@@ -1,36 +1,39 @@
-﻿#region PUSH_TLSLATEST ; #*------v FUNCTION push-TLSLatest v------
-function push-TLSLatest {
+﻿# push-TLSLatest
+
+    #region PUSH_TLSLATEST ; #*------v push-TLSLatest v------
+    #if (-not(gi function:push-TLSLatest -ea 0)) {
+        function push-TLSLatest {
             <#
-            .SYNOPSIS
-            push-TLSLatest - Elevates TLS on Powershell connections to highest available local version
-            .NOTES
-            Version     : 0.0.
-            Author      : Todd Kadrie
-            Website     : http://www.toddomation.com
-            Twitter     : @tostka / http://twitter.com/tostka
-            CreatedDate : 2025-
-            FileName    : push-TLSLatest.ps1
-            License     : MIT License
-            Copyright   : (c) 2025 Todd Kadrie
-            Github      : https://github.com/tostka/verb-Network
-            Tags        : Powershell,Security,TLS,protocol,Encryption
-            AddedCredit : REFERENCE
-            AddedWebsite: URL
-            AddedTwitter: URL
-            REVISIONS        
-            * 12:46 PM 9/17/2025 spliced orig expanded CBH over, brought up to date
-            * 9:05 AM 6/2/2025 expanded CBH, copied over current call from psparamt
-            * 4:41 PM 5/29/2025 init (replace scriptblock in psparamt)
-            .DESCRIPTION
-            push-TLSLatest - Elevates TLS on Powershell connections to highest available local version        
-            .INPUTS
-            None. Does not accepted piped input.
-            .OUTPUTS
-            None. 
-            .EXAMPLE
-            PS> push-TLSLatest ;     
-            .LINK
-            https://github.com/tostka/verb-Network      
+        .SYNOPSIS
+        push-TLSLatest - Elevates TLS on Powershell connections to highest available local version
+        .NOTES
+        Version     : 0.0.
+        Author      : Todd Kadrie
+        Website     : http://www.toddomation.com
+        Twitter     : @tostka / http://twitter.com/tostka
+        CreatedDate : 2025-
+        FileName    : push-TLSLatest.ps1
+        License     : MIT License
+        Copyright   : (c) 2025 Todd Kadrie
+        Github      : https://github.com/tostka/verb-Network
+        Tags        : Powershell,Security,TLS,protocol,Encryption
+        AddedCredit : REFERENCE
+        AddedWebsite: URL
+        AddedTwitter: URL
+        REVISIONS        
+        * 12:46 PM 9/17/2025 spliced orig expanded CBH over, brought up to date
+        * 9:05 AM 6/2/2025 expanded CBH, copied over current call from psparamt
+        * 4:41 PM 5/29/2025 init (replace scriptblock in psparamt)
+        .DESCRIPTION
+        push-TLSLatest - Elevates TLS on Powershell connections to highest available local version        
+        .INPUTS
+        None. Does not accepted piped input.
+        .OUTPUTS
+        None. 
+        .EXAMPLE
+        PS> push-TLSLatest ;     
+        .LINK
+        https://github.com/tostka/verb-Network      
             #>
             [CmdletBinding()]
             PARAM() ;
@@ -54,14 +57,14 @@ function push-TLSLatest {
                     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor $_
                 } ;
             } ;
-        }
-#endregion PUSH_TLSLATEST ; #*------^ END FUNCTION push-TLSLatest  ^------
-
+        } ;
+    #} ;
+    #endregion PUSH_TLSLATEST ; #*------^ END push-TLSLatest ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUCbVaHbn+GY4koFjDWI0KadKc
-# Je2gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU9w/C9PMJlVx/BhfkIDnf/q0l
+# FgygggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -76,9 +79,9 @@ function push-TLSLatest {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTdz4gU
-# oA3Mz+Npedq7V3+nxn1MczANBgkqhkiG9w0BAQEFAASBgE/YrfVbYF/F5tzJnNZZ
-# JjG8W5B1VqPvQAHGWDppwD3L9pbQ7hg9+1zXvgH4HDSYEC9iMv/hcL6cSS5SUijD
-# w8j/35EA8sw8AMr2sZ/3p5jBPloDv+BkUHHIkvaYq7hMW21QZEiZRbHOWJUwjxqv
-# L+7HuVMwqrQ1e8zBTuNA+fTc
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTOp2mR
+# fdC8ihK6kc+dogZwnpVUoDANBgkqhkiG9w0BAQEFAASBgJ0vm4j1/QnOSR7WbRpu
+# +/qNXu03UkhJT+s8WVz4H/j0gzkp1031/GgIlTj7W/oT85Lk3GhhBJ5+eUWaNObj
+# 6IyxzsKA596lN2Z0M7/nDcND35DtfLoo0PQBiquC+WQXHIXA9EmJq1Ktrd+FJ54D
+# kzr1Mm/q5mPlE2Phs4It8diq
 # SIG # End signature block

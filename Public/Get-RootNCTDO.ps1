@@ -1,4 +1,7 @@
-﻿#region GET_ROOTNCTDO ; #*------v FUNCTION Get-RootNCTDO v------
+﻿# Get-RootNCTDO.ps1
+
+
+#region GET_ROOTNCTDO ; #*------v Get-RootNCTDO v------
 function Get-RootNCTDO{
         <#
         .SYNOPSIS
@@ -18,6 +21,7 @@ function Get-RootNCTDO{
         AddedWebsite: http://eightwone.com
         AddedTwitter: URL        
         REVISIONS
+        * 8:31 PM 3/26/2026 move from vnet to vad
         * 11:50 AM 10/17/2025 updated CBH, incl output DN example
         * 1:14 PM 9/17/2025 port to vnet from xopBuildLibrary; add CBH, and Adv Function specs
         .DESCRIPTION
@@ -41,13 +45,14 @@ function Get-RootNCTDO{
         PARAM() ;
         return ([ADSI]'').distinguishedName.toString()
     }
-#endregion GET_ROOTNCTDO ; #*------^ END FUNCTION Get-RootNCTDO  ^------
+#endregion GET_ROOTNCTDO ; #*------^ END Get-RootNCTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUq0gMdSaKneSIarblQlG685X/
-# m9OgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU6GtQG3qWw23s3BZ26jjSkKB/
+# 0C6gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -62,9 +67,9 @@ function Get-RootNCTDO{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRN6syS
-# W0QLsin9JFdktA2dDdSUeDANBgkqhkiG9w0BAQEFAASBgIT68459ZETXLq1xI/wJ
-# rasj7jlv0CMc+HI4HPvi+7JX+garBg9jOpvY8ugIHrIpevR9K5SsqVYNxle3HQBA
-# m0rFsHm3Mibsrzu169txzhN0kfbdeYAnkDqJeA4ypyKEDsaUu32+PnVPb/FvdUi6
-# 9pXLPvXqtGHW87Lg+HpgoDYp
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQ70RfV
+# JJ9xpxjrW72WW7beRhIWrjANBgkqhkiG9w0BAQEFAASBgI5V7oetlZ+XxJFwjuI3
+# ScTKP4gKk/tCmtkgrLDZVenfSCtXFexvTnxk7qZ+kDIMPJNL7tS9+jyFMvo2CDSl
+# N/LLsGbcKM3Ti5kM81ylKbXwJhuM5zEGU3O+eqPPxIBq0qpd5YeUPNoKgnMP8MSs
+# LTDUTf2bXLzCxtXqbpBJRh50
 # SIG # End signature block

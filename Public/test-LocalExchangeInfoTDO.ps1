@@ -1,5 +1,8 @@
-﻿#region TEST_LOCALEXCHANGEINFOTDO ; #*------v FUNCTION test-LocalExchangeInfoTDO v------
-function test-LocalExchangeInfoTDO {
+﻿# test-LocalExchangeInfoTDO.ps1
+
+    #region TEST_LOCALEXCHANGEINFOTDO ; #*------v test-LocalExchangeInfoTDO v------
+    #if(get-command test-LocalExchangeInfoTDO -ea STOP){}ELSE{
+        function test-LocalExchangeInfoTDO {
             <#
             .SYNOPSIS
             test-LocalExchangeInfoTDO - Checks local server's status as an Exchange Server (checks for Exchange Services, Registry Keys, key roles, versions), without reliance on Exchange Mgmt Shell). Differs from vx10\get-xopServerAdminDisplayVersion(), in that it isn't intended to be run for remote server version verification, and avoids reliance on get-exchangeserver and other Exchange Mgmt Shell dependancies.
@@ -18,6 +21,7 @@ function test-LocalExchangeInfoTDO {
             AddedWebsite: URL
             AddedTwitter: URL
             REVISIONS
+            * 2:35 PM 2/26/2026 added rem'd exist tests
             * 10:45 AM 8/6/2025 added write-myOutput|Warning|Verbose support (for xopBuildLibrary/install-Exchange15.ps1 compat)
             * 2:58 PM 7/17/2025 updated CBH;  hybrid with prexisting vx10\test-LocalExchangeInfoTDO, combined best ideas from both; ren (again) to match existing: test-xopExchangeLocalInstallTDO -> test-LocalExchangeInfoTDO()
             * 4:09 PM 7/13/2025 add: cbh demo to test for down/disabled svcs state ;
@@ -49,7 +53,7 @@ function test-LocalExchangeInfoTDO {
             ExVers = [string]  'ExS','Ex2019','Ex2016','Ex2013','Ex2010','Ex2007','Ex2003','Ex2000'
 
             ## return on a typical Exchange 2016 Mailbox server (with services stopped/disabled)
-        
+    
             ```powershell
             isLocalExchangeServer : True
             hasExServices         : True
@@ -64,7 +68,7 @@ function test-LocalExchangeInfoTDO {
             isMbx                 : True
             isUM                  : True
 
-         
+     
             ```
             .INPUTS
             None, no piped input.
@@ -148,7 +152,7 @@ function test-LocalExchangeInfoTDO {
                 #>
                 if (get-service | ? { $_.ServiceName -match $rgxExSvcNames }) {
                     $hSummary.hasExServices = $true ;
-                    $hSummary.ExServicesStatus = get-service -ComputerName $thisserver.fqdn | ? { $_.ServiceName -match $rgxExSvcNamesFull } | select-object servicename, displayname, status, starttype
+                    $hSummary.ExServicesStatus = get-service -ComputerName $env:computername | ? { $_.ServiceName -match $rgxExSvcNamesFull } | select-object servicename, displayname, status, starttype
                 } else { $hSummary.hasExServices = $false } ;
                 if ($env:ExchangeInstalled) {
                     $hSummary.isLocalExchangeServer = $true ;
@@ -361,14 +365,14 @@ function test-LocalExchangeInfoTDO {
                 $mts = $hSummary.GetEnumerator() | ? { ($null -eq $_.value) -OR ($_.value -eq '') } ; $mts | foreach-object { $hSummary.remove($_.Name) } ; remove-variable mts -ea 0 ;
                 [pscustomobject]$hSummary | write-output
             }
-        }
-#endregion TEST_LOCALEXCHANGEINFOTDO ; #*------^ END FUNCTION test-LocalExchangeInfoTDO  ^------
-
+        }        
+    #}
+    #endregion TEST_LOCALEXCHANGEINFOTDO ; #*------^ END test-LocalExchangeInfoTDO ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUVQYMbpOFDJaPQN8FDJ4Yme/c
-# MKmgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUy36pQG81YVkyLbLmc5kHOygR
+# KDugggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -383,9 +387,9 @@ function test-LocalExchangeInfoTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTvKShE
-# R7MRG/LT14KWhEpQTuf87jANBgkqhkiG9w0BAQEFAASBgKF+4MdodWCcbGLDFI9P
-# W/z/lwKrlDoRcU01QeHdHKu+M/P5HjOFS5P8b86L8bwvMWNz/SxxPUNJq5RPkHlM
-# IKqtKSCde8xlarZeu5efirILhr6LhNXu+HG60uzvU+HX1etd2fus97gKZhPA7s92
-# RiYry12i2rmoCglr1v5niRDq
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSuWUtE
+# KlWRMQrlxWYY+ULBCKLr3zANBgkqhkiG9w0BAQEFAASBgECqlL/zq850Gjg72shH
+# lUbAC1YS6/TbKXYYF2hC7v8sP0IgRasFYKDMODZgwEGA4FQgQwqXyuPHb8ZPBbzT
+# 4TWPKihrXiSzVYniNKkjBTqukbxZpr4uT3gezdfcRqdv1iCEbCpTX1m34tbFuwyI
+# l+HE3JC7GqSJyOj0WVzHlTeo
 # SIG # End signature block

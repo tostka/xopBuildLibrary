@@ -1,27 +1,60 @@
-﻿#region TEST_REGISTRYVALUENOTNULL ; #*------v FUNCTION Test-RegistryValueNotNull v------
+﻿
+#region TEST_REGISTRYVALUENOTNULL ; #*------v Test-RegistryValueNotNull v------ 
 function Test-RegistryValueNotNull {
-                [OutputType('bool')]
-                [CmdletBinding()]
-                PARAM(
-                    [Parameter(Mandatory=$true)]
-                        [ValidateNotNullOrEmpty()]
-                        [string]$Key,
-                    [Parameter(Mandatory=$true)]
-                        [ValidateNotNullOrEmpty()]
-                        [string]$Value
-                )
-                $ErrorActionPreference = 'Stop'
-                if (($regVal = Get-ItemProperty -Path $Key -Name $Value -ErrorAction Ignore) -and $regVal.($Value)) {
-                    $true
-                }
-            }
-#endregion TEST_REGISTRYVALUENOTNULL ; #*------^ END FUNCTION Test-RegistryValueNotNull  ^------
+    <#
+    .SYNOPSIS
+    Test-RegistryValueNotNull.ps1 - Checks specified registry key is Not Null
+    .NOTES
+    Version     : 1.0.0
+    Author      : Todd Kadrie
+    Website     :	http://www.toddomation.com
+    Twitter     :	@tostka / http://twitter.com/tostka
+    AddedCredit : Adam Bertram
+    AddedWebsite:	https://adamtheautomator.com/pending-reboot-registry-windows/
+    AddedTwitter:	@adambertram
+    CreatedDate : 20201014-0826AM
+    FileName    : Test-RegistryValueNotNull.ps1
+    License     : MIT License
+    Copyright   : (c) 2020 Todd Kadrie
+    Github      : https://github.com/tostka/verb-XXX
+    Tags        : Powershell,System,Reboot
+    REVISIONS
+    * 1:35 PM 4/25/2022 psv2 explcit param property =$true; regexpattern w single quotes.
+    * 5:03 PM 1/14/2021 init, minor CBH mods
+    * 7/29/19 AB's posted version
+    .DESCRIPTION
+    Test-RegistryValueNotNull.ps1 - Checks specified registry key is Not Null
+    .PARAMETER  Key
+    Full registkey to be tested [-Key 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending']
+    .PARAMETER  Value
+    Value to be compared to
+    .EXAMPLE
+    Test-RegistryValueNotNull -Key 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager' -Value 'PendingFileRenameOperations2'
+    Tests value of the specified key is NotNull
+    .LINK
+    https://github.com/tostka/verb-IO
+    #>
+    [OutputType('bool')]
+    [CmdletBinding()]
+    #[Alias('get-ScheduledTaskReport')]
+    PARAM(
+        [Parameter(Mandatory=$true)][ValidateNotNullOrEmpty()]
+        [string]$Key,
+        [Parameter(Mandatory=$true)][ValidateNotNullOrEmpty()]
+        [string]$Value
+    ) ;
+    $ErrorActionPreference = 'Stop'
+    if (($regVal = Get-ItemProperty -Path $Key -Name $Value -ErrorAction Ignore) -and $regVal.($Value)) {
+        $true| write-output  ;
+    } ;
+}
+#endregion TEST_REGISTRYVALUENOTNULL ; #*------^ END Test-RegistryValueNotNull ^------
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUwC+twzGgNrwG41R3iwXrT5UL
-# RLSgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUh67Ffl+0dWvFWgAXN2hN2yrh
+# mbqgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -36,9 +69,9 @@ function Test-RegistryValueNotNull {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQkgBEK
-# m3+yxwNX3PtVajlWugR8IDANBgkqhkiG9w0BAQEFAASBgAH9zIDSxaAsv0wbzDju
-# NG0kWLwUv16w6JQN7MWbsVh8og6YJQrYJ3IKVMw9zQ1UqITBQ/Wc+61cBsA0hdBN
-# 6YN2ja9kqqt9tvG9czb5lrneo5fA9HFPO7R5Dc+Ty82jkaZCeZuedV2bcCfDOTTF
-# /mhE2yX1Nm2YOKaP3LSzzquv
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRBdXsF
+# HXIgjXv12jBTBeRELHNd/TANBgkqhkiG9w0BAQEFAASBgFExCtSFtdwk06dsKlkK
+# 8giZiV4UZlCYSZFvl1CXHIcB33XfApxrLd5nYJAHtSU+Bn5VhXu+1t/TQXB9RwNE
+# 00/zI9WQykyf6flOc+qxElUDCMzjskgVQK6H5SHuyDS0Ae11x9eWeZ14ydsFmh+O
+# TK8x2iWO9dJY3CBQbjO9hqGK
 # SIG # End signature block

@@ -1,5 +1,7 @@
-﻿#region CONVERT_XOPADMINDISPLAYVERSIONTDO ; #*------v FUNCTION Convert-xopAdminDisplayVersionTDO v------
-function Convert-xopAdminDisplayVersionTDO {
+# Convert-xopAdminDisplayVersionTDO.ps1
+
+    #region CONVERT_XOPADMINDISPLAYVERSIONTDO ; #*------v Convert-xopAdminDisplayVersionTDO v------
+    function Convert-xopAdminDisplayVersionTDO {
             <#
             .SYNOPSIS
             Convert-xopAdminDisplayVersionTDO - Convert Exchange Server AdminDisplayVersion (as returned by EMS get-ExchangeServer) to Semantic Version (n.n.n.n)
@@ -89,14 +91,14 @@ function Convert-xopAdminDisplayVersionTDO {
                 } ;
             }
         } ;  # PROC-E
-    }
-#endregion CONVERT_XOPADMINDISPLAYVERSIONTDO ; #*------^ END FUNCTION Convert-xopAdminDisplayVersionTDO  ^------
-
+    } ; 
+    #endregion CONVERT_XOPADMINDISPLAYVERSIONTDO ; #*------^ END Convert-xopAdminDisplayVersionTDO ^------
+    
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUPWkIRUB4Tv/uyg4knKEvT1T2
-# GV+gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUY5gSgks1BvhUKZnOUISjlZug
+# 4QOgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -111,9 +113,9 @@ function Convert-xopAdminDisplayVersionTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTbu4sk
-# qC92SIHiGsca9od9UZZwtTANBgkqhkiG9w0BAQEFAASBgDhARHkRShkv7w+taPHY
-# yRevto/EM6HZUHMxxAhbQwF2dSM3ax8IMLQv6YdBcZx6GW9iky9crhaCogk2TKN1
-# y9nXI3Z29JYBRc86qsb/4Vcpkco1s23R8Q1y4ucsddEkgW2AXzRH44JmeHvHkeQf
-# VpKnvYQ5HM+V1IRGJDFzu3fq
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTXOEDM
+# gDcjSYWaR5qpIwXha/JqzDANBgkqhkiG9w0BAQEFAASBgB3gsM+7atNW+MeIcjbV
+# EEmJIlm5NpLvxHU+jOgbuM1sdVhykvFGabqLYmgVWQKUfDgNrh9+15x1+RVhkqB7
+# E9aQsih6hopdYTlj4OkdN+3UtzsTQ0t62MINzRc+Gt1v0D2SJ0QJCeS5D/1hbiy2
+# X23unH0mdcGOdEB7YtaS797H
 # SIG # End signature block

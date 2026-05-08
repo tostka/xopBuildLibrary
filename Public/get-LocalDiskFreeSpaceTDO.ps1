@@ -1,4 +1,7 @@
-﻿#region GET_LOCALDISKFREESPACETDO ; #*------v FUNCTION get-LocalDiskFreeSpaceTDO v------
+﻿# get-LocalDiskFreeSpaceTDO.ps1
+
+
+#region GET_LOCALDISKFREESPACETDO ; #*------v get-LocalDiskFreeSpaceTDO v------
 Function get-LocalDiskFreeSpaceTDO {
             <#
             .SYNOPSIS
@@ -78,13 +81,14 @@ Function get-LocalDiskFreeSpaceTDO {
                       Sort-Object -property "Name" | write-output  ; 
             } ; 
         }
-#endregion GET_LOCALDISKFREESPACETDO ; #*------^ END FUNCTION get-LocalDiskFreeSpaceTDO  ^------
+#endregion GET_LOCALDISKFREESPACETDO ; #*------^ END get-LocalDiskFreeSpaceTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU9Vbo/qX3kvg3DFO5gUPb/+9d
-# tvmgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUy6j8l1kszOyuTJ6CQ9LmGkRW
+# tGmgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -99,9 +103,9 @@ Function get-LocalDiskFreeSpaceTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRCltmW
-# dKuP8kqOmGNHYlhc790iFzANBgkqhkiG9w0BAQEFAASBgKWMDPMrEQubzqLnZCPL
-# E/cO+pd5xYXXk2R+WJfgs0lh0lvcwVbE3rE2PrQdxJr7gCbLc40Eu7zqkvMN/tut
-# a7Fu5hNUxxSNbzQWMY1hVwo5Z9IdG3B3O7FvLZS9RTVVSTArD3qf4cVwFq2EMuZF
-# 1qekc2VUPg/X60TlB8usG44l
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTIniKH
+# BxQYWZQgKBuSRb9X9McjGTANBgkqhkiG9w0BAQEFAASBgBM++a1Hs6lJLZOlNscO
+# 6vUFhdD8ovuEKE3I0xzk/l0zxLQLkfSsg44d1hEnfuCkafuX28IvCqt6wdPq7BIu
+# ahZ8b4MznVxM+sc3Qi/wPaR9EXpNy+PNhGjKjHySpQFK7fM3W2miEN6kiwfB7Y75
+# fzbJgYuTDzq3K5GbvyZwOOdb
 # SIG # End signature block

@@ -1,5 +1,7 @@
-﻿#region TEST_EXCHANGEORGANIZATIONTDO ; #*------v FUNCTION Test-ExchangeOrganizationTDO v------
-function Test-ExchangeOrganizationTDO{
+﻿# Test-ExchangeOrganizationTDO.ps1
+
+    #region TEST_EXCHANGEORGANIZATIONTDO ; #*------v Test-ExchangeOrganizationTDO v------
+    function Test-ExchangeOrganizationTDO{
         <#
         .SYNOPSIS
         Test-ExchangeOrganizationTDO - Tests specified Exchange Organization within the local Forest 
@@ -53,21 +55,20 @@ function Test-ExchangeOrganizationTDO{
         https://github.org/tostka/verb-Network/
         #>
         [CmdletBinding()]
-        [alias('Test-ExchangeOrganization')]
+        [alias('Test-ExchangeOrganization821')]
         PARAM(
             [Parameter(HelpMessage = "Exchange Organization Name to be tested")]
                 [string]$Organization
         ) ;
         $CNC= Get-ForestConfigurationNCTDO
         return( [ADSI]"LDAP://CN=$Organization,CN=Microsoft Exchange,CN=Services,$CNC")
-    }
-#endregion TEST_EXCHANGEORGANIZATIONTDO ; #*------^ END FUNCTION Test-ExchangeOrganizationTDO  ^------
-
+    } ; 
+    #endregion TEST_EXCHANGEORGANIZATIONTDO ; #*------^ END Test-ExchangeOrganizationTDO ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUARC8W7b+LiclzNroU988s+dp
-# OJqgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUk+maTrqVKsiZPpEDkOa+92wQ
+# jsegggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -82,9 +83,9 @@ function Test-ExchangeOrganizationTDO{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQhCwWw
-# ukCIY5iYLV4E146VmKOwozANBgkqhkiG9w0BAQEFAASBgGnOe767Aw/+sJAcgaRD
-# /ueXWI+XhedxRL4vVJy4Ys+j4VWdnRNBaVtlTGjztEHhYV2P1tcxeHEK2coXGzU0
-# eKb6h5tkhiB8MO4jPbMPDh9DXaYrkK2IhsK8+uuLZvHd6XE61tSlZu6plHKbMdpc
-# DzPPGOKxLFVYFJ7sh3K/E2+r
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRdpwby
+# 6NBtF5bU7MxId0d5vny4PDANBgkqhkiG9w0BAQEFAASBgJez+GJ/0U/rNhsxZXec
+# jrNqcSdFvz0gByiSevHCmFhDPGXCsBIJQuj79iAsUNBRk+FSkk/B5xMey+4E/5l+
+# 1T8GfzMApk3eS32I9tKlknjpQ6IRzZLo7rCfENuEnhxfgOOnAgLasPw27evsGyfX
+# Qy6zZj6+9YplV03vtZyrVazs
 # SIG # End signature block

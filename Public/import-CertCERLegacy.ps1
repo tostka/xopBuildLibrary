@@ -1,5 +1,8 @@
-﻿#region IMPORT_CERTCERLEGACY ; #*------v FUNCTION import-CertCERLegacy v------
-function import-CertCERLegacy {
+# import-CertCERLegacy
+    
+    #region IMPORT_CERTCERLEGACY ; #*------v import-CertCERLegacy v------
+    if (-not (get-command import-CertCERLegacy -ea 0)) {
+        function import-CertCERLegacy {
             <#
             .SYNOPSIS
             import-CertCERLegacy.ps1 - Imports Cert/CER (non-key CA) files into specified Store & location (fall back use for when PKI\Import-Certificate() is not available - Psv2 etc)
@@ -125,14 +128,14 @@ function import-CertCERLegacy {
                     if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
                 } ;
             } ; 
-        }
-#endregion IMPORT_CERTCERLEGACY ; #*------^ END FUNCTION import-CertCERLegacy  ^------
-
+        } ;
+    }
+    #endregion IMPORT_CERTCERLEGACY ; #*------^ END import-CertCERLegacy ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUAYqxTV8ClNHrsUb//VGZYwQp
-# 90ugggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUi6d01vmTCgPY5HCASlAicpaC
+# lG6gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -147,9 +150,9 @@ function import-CertCERLegacy {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRKTJsq
-# QpffvcodGnjVaNyHkmVYgjANBgkqhkiG9w0BAQEFAASBgGBN4l7B87W6ud4oQdYg
-# ri15vROQ6yQgpjEtLrJFIuRxGpvLf1pDEkIyk7q4NsdlNZWZBrZ+d8FJHV7GwFi1
-# +RpWpkmP/PgUn4WROaWwCEnxitNP7LnMko9PvMPvRqoepAwyNyfNyF9BY9SeriNB
-# m156mWdJwqY8wbhR/Ww6agLz
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQdjCA0
+# lgcpI9i7MrJyi2k26BgErTANBgkqhkiG9w0BAQEFAASBgKdHkY/SC0no+tzl3iIf
+# mBlN+6PxxmsMUXaRthACWSp9hMe9nc61aDpIG9YVGciPd+vZnfK9gubh9hM1SxKi
+# OrwkRKK4ZZKDjVMq+h0YPzfwhgQxkQvc8J4JaT3cEUvK5KP9jJTl1dpRlpOTGatQ
+# Tq9h8KkY+R02PQx8NtP3C9NU
 # SIG # End signature block

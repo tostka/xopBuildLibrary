@@ -1,4 +1,7 @@
-﻿#region GET_SETUPTEXTVERSIONTDO ; #*------v FUNCTION Get-SetupTextVersionTDO v------
+﻿# Get-SetupTextVersionTDO.ps1
+
+
+#region GET_SETUPTEXTVERSIONTDO ; #*------v Get-SetupTextVersionTDO v------
 Function Get-SetupTextVersionTDO {
         <#
         .SYNOPSIS
@@ -27,9 +30,9 @@ Function Get-SetupTextVersionTDO {
         
         This is of very limited utility: Duped from install-Exchange15-TTC.ps1, solely to support out of band calls to that function: 
         - Works with a static array of recent builds of installable RTM/SP/CU builds. 
-        - by contrast verb-ex2010\xopBuildSemVersToTextNameTDO() covers every version of Exchange Server back to 4.0, including every SU & HU. Issue between the two, 
+        - by contrast verb-io\Get-FileVersionTDO() covers every version of Exchange Server back to 4.0, including every SU & HU. Issue between the two, 
             is Resolve-xopBuildSemVersToTextNameTDO's ProductName reflects MS's version doc page string; 
-            while xopBuildLibrary.psm1\Get-SetupTextVersion() returns a non-standard name for the same build/CU 
+            while 821\Get-SetupTextVersion() returns a non-standard name for the same build/CU 
             ('Exchange Server 2016 CU23 (2022H1)' v 'Exchange Server 2016 Cumulative Update 23')
             Retaining both, to avoid changing rev version strings already stored in server build state .xml files
 
@@ -117,13 +120,14 @@ Function Get-SetupTextVersionTDO {
         }
         return $res
     }
-#endregion GET_SETUPTEXTVERSIONTDO ; #*------^ END FUNCTION Get-SetupTextVersionTDO  ^------
+#endregion GET_SETUPTEXTVERSIONTDO ; #*------^ END Get-SetupTextVersionTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhCJlCgqjxRAwMR9Pci5bes4W
-# lvagggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUUuwd+W6NF9MaLSRL54t5dXVB
+# pQOgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -138,9 +142,9 @@ Function Get-SetupTextVersionTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBR33RPI
-# h8qobN37xSA3qhCg+QMUtTANBgkqhkiG9w0BAQEFAASBgFzwEjB1bzZ7Wi28ZWFy
-# WgGNMJyAHVgPler7sgSGT5IQhpIDvoYie3X3ANB1MdeMO3GE7/1uyl8FeglxU4e/
-# lWJQCe0ODDXXI/+3l1CJJrn2hbS0Mr+y2gyR2JOz4xZ4OLWr5EpuyGsn+xtpUGIY
-# y/jqirWj5zInnmie2rhhf68k
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSh7qHx
+# FJ4hrYpG2LD2ZeEoUlHdSTANBgkqhkiG9w0BAQEFAASBgGNfw/+Soj5uvUBtNU4o
+# qlpK1QaImKAD3K9x88sqt4pCys5l/uDk1lghpXFzs/FcjKnWi8ZCmNSsHYrgiWO3
+# kiOuNMg9l6AzQdZYW1lSA0nj3GhankLf4yHhpQnTlt1zyqX96zMPMgjUH9tsXJkH
+# g8KE1A6QTJMJ/fgl0/sMo0UK
 # SIG # End signature block

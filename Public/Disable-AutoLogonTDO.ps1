@@ -1,4 +1,7 @@
-﻿#region DISABLE_AUTOLOGONTDO ; #*------v FUNCTION Disable-AutoLogonTDO v------
+﻿# Disable-AutoLogonTDO.ps1
+
+
+#region DISABLE_AUTOLOGONTDO ; #*------v Disable-AutoLogonTDO v------
 function Disable-AutoLogonTDO{
         <#
         .SYNOPSIS
@@ -84,13 +87,14 @@ function Disable-AutoLogonTDO{
             if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
         } ;
     }
-#endregion DISABLE_AUTOLOGONTDO ; #*------^ END FUNCTION Disable-AutoLogonTDO  ^------
+#endregion DISABLE_AUTOLOGONTDO ; #*------^ END Disable-AutoLogonTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhwQqJ1YDBY/DTxPFhINyFPw6
-# i4ugggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUgEE5jm5VovrHTzVopdpRiWPM
+# In2gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -105,9 +109,9 @@ function Disable-AutoLogonTDO{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQrtINC
-# lyOk96+RUMgGpWJTLlWLCzANBgkqhkiG9w0BAQEFAASBgGHJ2dd9pu6BQP/5JVCx
-# dgZ/mXEM62G7z5m5cMc2KC2hcjd8sqSw/EHqAAweATnD0ejKJj0X3JYQ9Jh4DTay
-# BGQtNekvDjceRXcKwM5B51WLd/KlB/yKouOkDMgf7Fka1Vnz8gChqZ7FeNEwELQg
-# 1LsSZ6zwK2k9YuXGp49wsUak
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSGVBx2
+# Yp1QDxVy+hnpUu600HF7NzANBgkqhkiG9w0BAQEFAASBgKbX6xpfwcWoIv59eMsW
+# jF++IWyl6znxizQHXpkljADFBV15xgEtynIiGGP35IjGCB7LkrBaNu40sRauBSir
+# dG+JRdkut0BEMZihE5+Z0a0Hex2VMAizBOLkG6LQ3XGk9+f6U10VH9SSnwbaRQyI
+# F7s5gDKIHaAeDlBKkYohjgR+
 # SIG # End signature block

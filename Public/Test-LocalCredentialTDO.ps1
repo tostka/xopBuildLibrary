@@ -1,5 +1,8 @@
-﻿#region TEST_LOCALCREDENTIALTDO ; #*------v FUNCTION Test-LocalCredentialTDO v------
-function Test-LocalCredentialTDO {
+﻿# Test-LocalCredentialTDO.ps1
+
+
+#region TEST_LOCALCREDENTIALTDO ; #*------v Test-LocalCredentialTDO v------
+ function Test-LocalCredentialTDO {
         <#
         .SYNOPSIS
         Test-LocalCredentialTDO - tests provided UserName & ComputerName combo against local machine accounts
@@ -67,13 +70,14 @@ function Test-LocalCredentialTDO {
             $DS.ValidateCredentials($UserName, $Password)
         }
     }
-#endregion TEST_LOCALCREDENTIALTDO ; #*------^ END FUNCTION Test-LocalCredentialTDO  ^------
+#endregion TEST_LOCALCREDENTIALTDO ; #*------^ END Test-LocalCredentialTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUVW3M7jUiZjAJ6yaWzTHx60pP
-# vGugggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUAHjSLI7s2hB+6KKSLGsIvYcB
+# bPegggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -88,9 +92,9 @@ function Test-LocalCredentialTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQemQLI
-# kZLhiK3Ppgf24qlQ4i5oKzANBgkqhkiG9w0BAQEFAASBgC0gm+pA5FWyKgFvbHHC
-# w3gi1XKsYHj53DY9rXKR2l8/5cssC2C4d1Xd56/STPGLkxolR6FSScmbajqt+fnV
-# 3mPu0nLLoZ90zS/j415PHCHJRA7EA5bj53YTJPxcYOEfUXXGY7UP6+2zzI1GR/A0
-# AntrCxchT8j4WK8jO9/8zJVr
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSL7kaW
+# 7b8pWdNMAXfnQQgHkYogsjANBgkqhkiG9w0BAQEFAASBgLRWRN8PksbgJAG8SzMm
+# 675LPlesjnPOSBqRN+YgXUhKCwFmmGHbTltg9NVIfNcd9j5e4ZatdZb/UpYsYfYd
+# kVl/DbxTbrn19KQx+AhWwp9TFSD/AKH1GCKwv3uAUW252j3gPb/oGeQadY/AfpF1
+# 8idw18wj6iNX2bNjYhP+vnOx
 # SIG # End signature block

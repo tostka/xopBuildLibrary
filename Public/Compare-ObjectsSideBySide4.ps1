@@ -1,5 +1,8 @@
-﻿#region COMPARE_OBJECTSSIDEBYSIDE4 ; #*------v FUNCTION Compare-ObjectsSideBySide4 v------
-function Compare-ObjectsSideBySide4 {
+﻿# Compare-ObjectsSideBySide4.ps1
+
+    #endregion COMPARE_OBJECTSSIDEBYSIDE4 ; #*------^ END Compare-ObjectsSideBySide4 ^------
+    #if(-not(gi function:Compare-ObjectsSideBySide4 -ea 0)){
+        function Compare-ObjectsSideBySide4 {
             <#
             .SYNOPSIS
             Compare-ObjectsSideBySide4() - Displays four objects side-by-side comparatively in console
@@ -126,13 +129,13 @@ function Compare-ObjectsSideBySide4 {
                 New-Object PSObject -Property $properties ;
             } ;
         }
-#endregion COMPARE_OBJECTSSIDEBYSIDE4 ; #*------^ END FUNCTION Compare-ObjectsSideBySide4  ^------
-
+    #}
+    #endregion COMPARE_OBJECTSSIDEBYSIDE4 ; #*------^ END Compare-ObjectsSideBySide4 ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUj8dfOudOBsAmyfoQq3iDZLF2
-# s7ygggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUrqUAXH78sCKu775SaVqsSf2i
+# eO2gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -147,9 +150,9 @@ function Compare-ObjectsSideBySide4 {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSLQecR
-# UtjqakIyjAZhbHEYA829UjANBgkqhkiG9w0BAQEFAASBgB6jSveDt2iFNj4lgpdy
-# BoluEqbmbiRQdIzuAfCezZ1doHMSM8kzJEq1tFZmAkEm0jftQoQ7yIzu0GYtthn3
-# CmCh+57/xI93u5/NSb6l0v/tc1p5tv3cKrSwfHWxiURwpaKSTK7+q18LAbxg+uDb
-# bVE5EFaKlnbwFcvrqRtcdNbN
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTB31oB
+# k/d9ou0SlvEiMFUuodzhRTANBgkqhkiG9w0BAQEFAASBgGaHrczrz/YpT+vUcs6I
+# RADbonUAERwdhM4rCLmWQqcybwdWusErB6S1j+aKEgNDmNqD3miJg3Y8vYwq3zuY
+# w19+lZD34k0dGcxUR18vjFA9AnfIxD9IyI8q5XtPfqB+59G2/vLK7XjRovjzXKRr
+# 4FFIzDEx/jQ8tmNLi7HHs0f+
 # SIG # End signature block

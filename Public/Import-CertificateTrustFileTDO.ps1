@@ -1,5 +1,7 @@
-﻿#region IMPORT_CERTIFICATETRUSTFILETDO ; #*------v FUNCTION Import-CertificateTrustFileTDO v------
-Function Import-CertificateTrustFileTDO {
+# Import-CertificateTrustFileTDO
+
+    #region IMPORT_CERTIFICATETRUSTFILETDO ; #*------v Import-CertificateTrustFileTDO v------
+    Function Import-CertificateTrustFileTDO {
         <#
         .SYNOPSIS
         Import-CertificateTrustFileTDO - Imports Root or Intermediate/Sub-CA non-key CER/CRT type certs into the proper rgx hive. Dynamically determines cert type (CA/IA) and imports as appropriate)
@@ -336,13 +338,12 @@ Function Import-CertificateTrustFileTDO {
              } ; # loop-E
          } ;  # PROC-E
     }
-#endregion IMPORT_CERTIFICATETRUSTFILETDO ; #*------^ END FUNCTION Import-CertificateTrustFileTDO  ^------
-
+    #endregion IMPORT_CERTIFICATETRUSTFILETDO ; #*------^ END Import-CertificateTrustFileTDO ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUWrFmH/rpL2ndBScwcK1jIWHD
-# oougggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUws23BjqkSh5g+cqd6C3EMPmJ
+# chGgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -357,9 +358,9 @@ Function Import-CertificateTrustFileTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRd6iFV
-# 41ifM9RUzyGs08EBuieL8zANBgkqhkiG9w0BAQEFAASBgCetT9+r0/G82NXdBjUS
-# Jf/EIjWzsWs6kda5pIWeMBD9MkU2pQjnpyxL2SHnkQ05ziprFKAVS9hkGPU0rZuL
-# KGFeTFDho43UQ7BwLPjI2a6P/hNLvx8b4pc7d5YRBNRz2/noTCoGlVuvqbAQaP0T
-# y5bWfpJdd5xedOxCYY0GEiq+
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRRR+VG
+# PzDVqfzZ8X5my6nzsKfMzjANBgkqhkiG9w0BAQEFAASBgHSEh/fTweATNDbVO17H
+# LG93y2c3oJFupIatX3SFzc61VJ159oPuLhRH1HIBVgHO2Dp3B9mZkoPF9qziakEu
+# P95nA/jhj4/SPQBV9DOToanptByhRe13eT2t+fy1ieV7KW8HofNWkkfIe7X4vb4q
+# DcjQNLFpPWC0hf3dOjfavGWy
 # SIG # End signature block

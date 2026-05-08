@@ -1,4 +1,7 @@
-﻿#region TEST_ISSCHEMAADMINTDO ; #*------v FUNCTION Test-isSchemaAdminTDO v------
+﻿# Test-isSchemaAdminTDO.ps1
+
+
+#region TEST_ISSCHEMAADMINTDO ; #*------v Test-isSchemaAdminTDO v------
 function Test-isSchemaAdminTDO {
         <#
         .SYNOPSIS
@@ -40,13 +43,14 @@ function Test-isSchemaAdminTDO {
         $SID= (New-object System.Security.Principal.SecurityIdentifier ($ADRootSID, 0)).Value.toString()
         return [Security.Principal.WindowsIdentity]::GetCurrent().Groups | Where-Object {$_.Value -eq "$SID-518"}
     }
-#endregion TEST_ISSCHEMAADMINTDO ; #*------^ END FUNCTION Test-isSchemaAdminTDO  ^------
+#endregion TEST_ISSCHEMAADMINTDO ; #*------^ END Test-isSchemaAdminTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUIwwgCO0jrwmvZVJQ1A8VGSGN
-# oACgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU9Ow9R/NijO8ikLf5DoxlgERW
+# t4OgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -61,9 +65,9 @@ function Test-isSchemaAdminTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSW/Dkc
-# 3WOUEnTZ2Rgkr92qRxVyBDANBgkqhkiG9w0BAQEFAASBgHPBzlEHZsiQru/gLLSk
-# 8vUOIhIgUFAdR28K1PjYr6GJwi0Kn2A9kmy4QexoCBHJrHoyPteeMe7VIVt4XuEK
-# 6rvDIXU9kwvU3cnlIltOl/eJF/a3VE8YvM2tOOhRWLpm9sGbdTteeIk6OUh22jZb
-# 2iAmklO9sqSAKsbQtUrNERnc
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQYMVbd
+# VDhBmOYbdqE2wHpQXWpDkzANBgkqhkiG9w0BAQEFAASBgAKt9lLfhGoszKuurtMX
+# ZdHoAoMrS3Gy/7LExX6QQ9947spbnCo7pcuSW7I+1utI+LwE+BKXAybcVxG4MMjA
+# b9pLlkCd8O6ht3A43z+vkkmRMeIBE0O1OaedRnqPXTz9vEemfmmP8w5XrqPvJkfl
+# 7XsCPKqR1KS/v2jG8dDasK2n
 # SIG # End signature block

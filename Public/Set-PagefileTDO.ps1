@@ -15,7 +15,7 @@ Function Set-PagefileTDO {
                 if($VerbosePreference -eq 'Continue'){if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level VERBOSE } else{ write-verbose "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; } ;
             } ;
             if (get-command get-ciminstance -ea 0) {
-                $Drives = get-ciminstance -Class Win32_ComputerSystem -EnableAllPrivileges ; 
+                $CS = get-ciminstance -Class Win32_ComputerSystem #-EnableAllPrivileges ;  # throws error using EnableAllPriv
             } else {
                 $CS = Get-WmiObject -Class Win32_ComputerSystem -EnableAllPrivileges
             }
@@ -86,12 +86,11 @@ Function Set-PagefileTDO {
             }
         }
 #endregion SET_PAGEFILETDO ; #*------^ END FUNCTION Set-PagefileTDO  ^------
-
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUrf9ZyIaFsc/2kpDAL43ku23o
-# Pv2gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUZ1DEM9gcgOReb2zW5e5ZiW8x
+# duugggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -106,9 +105,9 @@ Function Set-PagefileTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBT0Vg1d
-# pfMCHHDy4g81Vggr4ykIpDANBgkqhkiG9w0BAQEFAASBgJ2paFng4z8WEmRZg1g+
-# 86ChtWi8dfmFDuUWBjN82k6XXavWKFkIL3/vDGxR94SOCL2tf7g68lH4E8ckz6xC
-# 2I3K6BoEtREAOwBlAMuw+NwSZT2f1RrCDJr5v6e02sm5VAlsfbccrOHQjc5NeaiB
-# i3WkYOlbB8wM7Z3H7jzhLe/7
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRmP5Js
+# bxHtBB6tiWt9C1Lt/uWdODANBgkqhkiG9w0BAQEFAASBgAGO15X84WQvJrVnkDE3
+# 5xiOWz+sKjgg4ijd+HXJbxfD7UyVthDtW19eaQxM64BMJsIRg87HDkB0Ew/jZm1J
+# L8mBbcwUC3+tDLKIlHNkAmMqq0Z89gWNjQL1Sj2nHckir7t1aOuPQcImzLbxje4j
+# DpjNx2Ie/UL4eiVW1eXg6LJo
 # SIG # End signature block

@@ -1,4 +1,7 @@
-﻿#region ENABLE_RUNONCETDO ; #*------v FUNCTION Enable-RunOnceTDO v------
+﻿# Enable-RunOnceTDO.ps1
+
+
+#region ENABLE_RUNONCETDO ; #*------v Enable-RunOnceTDO v------
 function Enable-RunOnceTDO{
         <#
         .SYNOPSIS
@@ -18,7 +21,7 @@ function Enable-RunOnceTDO{
         AddedWebsite: http://eightwone.com
         AddedTwitter: URL        
         REVISIONS
-        * 1:23 PM 11/3/2025 Enable-RunOnceTDO:add: alias:Enable-RunOnce
+        * 1:23 PM 11/3/2025 add: alias:Enable-RunOnce
         * 3:00 PM 9/18/2025 port to vdesk from xopBuildLibrary; add CBH, and Adv Function specs ; 
             add splatting on the new-itemprop, to store the settings being set;  
             remove the write-my*() support (defer to native w-l support)
@@ -113,13 +116,14 @@ function Enable-RunOnceTDO{
             if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
         } ;     
     }
-#endregion ENABLE_RUNONCETDO ; #*------^ END FUNCTION Enable-RunOnceTDO  ^------
+#endregion ENABLE_RUNONCETDO ; #*------^ END Enable-RunOnceTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUjVoPZciSCZmJ0X6l5GKx9p1N
-# 5q2gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUkPOLwpw0rlS8XYM7P1cGpFh/
+# lTqgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -134,9 +138,9 @@ function Enable-RunOnceTDO{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBT4jw6p
-# uYZtroePdhdv+iuRMPZffzANBgkqhkiG9w0BAQEFAASBgJ4KoHKWrbJZD35/sSfY
-# 0p3VJaJOZa+/feQBNDXlAl/fwtFBYz5W+jV/e047tk+QoXM+Gy6flT+p50MNhF9G
-# CSuDa5UqWd+tMW3L2Iv2P4EkDBFNZRUiDYrFKHydZoA9EgZxihv0em5TKPRUklzA
-# oHmtPvz4Ytzx+ftQsoBQeREw
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSTGnGT
+# zuOTdCJuMbbyE6MraV5K5DANBgkqhkiG9w0BAQEFAASBgJGQmZzIYnN480IVvVax
+# QEqv6a9gce74BXHWm6x5aAb+mMlIVQInTtvV3x4hkraB0RMTrcIYrw3So0MI9/Kt
+# q1QYFqLZWW4yNUPXhiM6OpdQS9uay6P9qJ+G9k8yuYxsFRJAcWGCkDIcS2fTqBgu
+# mfVmlOEQGGMZHl5yZSw5v3be
 # SIG # End signature block

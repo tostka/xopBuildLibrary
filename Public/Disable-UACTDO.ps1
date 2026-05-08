@@ -1,5 +1,7 @@
-﻿#region DISABLE_UACTDO ; #*------v FUNCTION Disable-UACTDO v------
-function Disable-UACTDO{
+﻿# Disable-UACTDO.ps1
+
+    #region DISABLE_UACTDO ; #*------v Disable-UACTDO v------
+    function Disable-UACTDO{
         <#
         .SYNOPSIS
         Disable-UACTDO - Disables User Account Control
@@ -12,13 +14,12 @@ function Disable-UACTDO{
         FileName    : Disable-UACTDO.ps1
         License     : (none asserted)
         Copyright   : (none asserted)
-        Github      : https://github.com/tostka/verb-desktop
+        Github      : https://github.com/tostka/verb-io
         Tags        : Powershell,ActiveDirectory,Forest,Domain
         AddedCredit : Michel de Rooij / michel@eightwone.com
         AddedWebsite: http://eightwone.com
         AddedTwitter: URL        
         REVISIONS
-        * 4:20 PM 10/8/2025 added back differential write-my* support
         * 3:00 PM 9/18/2025 port to vdesk from xopBuildLibrary; add CBH, and Adv Function specs ; 
             remove the write-my*() support (defer to native w-l support)
         * 10:45 AM 8/6/2025 added write-myOutput|Warning|Verbose support (for xopBuildLibrary/install-Exchange15.ps1 compat) 
@@ -29,16 +30,13 @@ function Disable-UACTDO{
         .EXAMPLE ; 
         PS> Disable-UAC
         .LINK
-        https://github.org/tostka/verb-Network/
+        https://github.org/tostka/verb-Desktop/
         #>
         [CmdletBinding()]
-        [alias('Disable-UAC')]
+        [alias('Disable-UAC821')]
         PARAM( ) ;
         $smsg = 'Disabling User Account Control'
-        if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
-            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
-        } ;
+        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level PROMPT } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
         #New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name EnableLUA -Value 0 -ErrorAction SilentlyContinue| out-null
         $pltnIP=[ordered]@{
             Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' ;
@@ -47,28 +45,21 @@ function Disable-UACTDO{
             erroraction = 'SilentlyContinue' ; 
         } ;        
         $smsg = "New-ItemProperty w`n$(($pltnIP|out-string).trim())" ; 
-        if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
-            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
-        } ;
+        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
         TRY{
             New-ItemProperty @pltnIP | out-null ; 
         } CATCH {
             $ErrTrapd=$Error[0] ;
             $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
-            if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
-                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            } ;
-
+            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
         } ;     
-    }
-#endregion DISABLE_UACTDO ; #*------^ END FUNCTION Disable-UACTDO  ^------
-
+    } ; 
+    #endregion DISABLE_UACTDO ; #*------^ END Disable-UACTDO ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUcA83Ww7opLF06u4SaQN75Yx9
-# upOgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU//IUUmdBPPiZPRK6k6kLK4yO
+# 2UKgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -83,9 +74,9 @@ function Disable-UACTDO{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSJ+wTB
-# aP6/7K+Kewpqm2SwtD7duTANBgkqhkiG9w0BAQEFAASBgBifmNyU89Yx62G1xYOa
-# qGoawUjJiKhQa43RwZcTP6O5w05i17QNsiBi+ywaCtceSE1eiof4u/x2dYX4SfoG
-# PprehyZukvyp5KVqeFwxkGZsznfieU3HF8+tre5fX+SfQfW8xd/ardyhHXIjrJgS
-# DA1tcB7ejt/pbj0ana2fiITL
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBT7iS2P
+# u19Cr0oHMr3IbL7aLNOrFzANBgkqhkiG9w0BAQEFAASBgIMGN8GaRJYuQPTfq7ib
+# jRuxzZj/O5Nx2p5m0F5132K+0GwUi6EG5SjEL6DTLCKsZT86O02cpmgCMdtM7ghr
+# sMls4XRjJr3Au4NIdFXeg6/fJZ+opsZJmYzjQtPs6gGHR9fHYU6R4LEr+Igask3p
+# YJDVkRyg6eF2pl98DzQrD1YU
 # SIG # End signature block

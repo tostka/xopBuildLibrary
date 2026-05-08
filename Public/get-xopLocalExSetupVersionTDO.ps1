@@ -1,8 +1,11 @@
-﻿#region GET_XOPLOCALEXSETUPVERSIONTDO ; #*------v FUNCTION get-xopLocalExSetupVersionTDO v------
+﻿# get-xopLocalExSetupVersionTDO.ps1
+
+
+#region GET_XOPLOCALEXSETUPVERSIONTDO ; #*------v get-xopLocalExSetupVersionTDO v------
 Function get-xopLocalExSetupVersionTDO {
         <#
         .SYNOPSIS
-        get-xopLocalExSetupVersionTDO - Discover local Exchange Server Installed BIN ExSetup.exe (or use specified -ExSetupPath), from common paths and return summary (FullName,Name,ProductVersion,Length,Lastwritetime)
+        get-xopLocalExSetupVersionTDO - Discover local Exchange Server CAB ExSetup.exe (or use specified -ExSetupPath), from common paths and return summary (FullName,Name,ProductVersion,Length,Lastwritetime)
         .NOTES
         Version     : 0.0.1
         Author      : Todd Kadrie
@@ -18,7 +21,6 @@ Function get-xopLocalExSetupVersionTDO {
         AddedWebsite: 
         AddedTwitter: 
         REVISIONS
-        * 1:18 PM 11/3/2025 updated description to indicate BIN ExSetup, (not CAB)
         * 1:29 PM 10/2/2025 init 
         .DESCRIPTION
         get-xopLocalExSetupVersionTDO - Discover local Exchange Server CAB ExSetup.exe (or use specified -ExSetupPath), from common paths and return summary (FullName,Name,ProductVersion,Length,Lastwritetime)
@@ -118,13 +120,14 @@ Function get-xopLocalExSetupVersionTDO {
             }; 
         } ;  # PROC-E
     }
-#endregion GET_XOPLOCALEXSETUPVERSIONTDO ; #*------^ END FUNCTION get-xopLocalExSetupVersionTDO  ^------
+#endregion GET_XOPLOCALEXSETUPVERSIONTDO ; #*------^ END get-xopLocalExSetupVersionTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUqyWdWDNvrGTSSTlyEMllIg3R
-# REOgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUgddlfCJqcn/GynnVRBm6fjST
+# WlmgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -139,9 +142,9 @@ Function get-xopLocalExSetupVersionTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRbMzDn
-# 5h0u+r6gMqpOEkRIwa/G2jANBgkqhkiG9w0BAQEFAASBgISAj3eaV6dbuB4WKSy3
-# KvpMNXafRQPky3LsFcQQFuIbfNgGNTAEQxvGfbjR6dKMLmGx8LH2MYPvHQP4DyEu
-# L2XBaVrZnuggBwFphf5DovgeEB+ykH5uMj8+fp+SkQHD67TZZK6bhnFPXIJfw0UJ
-# uYghZe+fKN2nW1uezNUmV2vd
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSEUYEP
+# cpQtgoqwknoKEtMlS8DyZDANBgkqhkiG9w0BAQEFAASBgKK4eHyrnLuINu2AKyuL
+# +9MfD5z61DdfcvIlHJ4UsHFpFvEWzdzU9MDdoWJnn7aq9tC8nNe2V+U408pNKPS6
+# aRwfcbqgCXjy3u+tSECLKMyBhZ0vUR4ulrEZrTov3nIxu5uK4AVP1HqzoATG22W9
+# Mhn/KPy4sZzrjgNpIiF/C47O
 # SIG # End signature block

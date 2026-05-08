@@ -1,107 +1,98 @@
-﻿#region SET_CERTIFICATESINCAHIERARCHYTDO ; #*------v FUNCTION Set-CertificatesInCAHierarchyTDO v------
-function Set-CertificatesInCAHierarchyTDO {
-            <#
-            .SYNOPSIS
-            Set-CertificatesInCAHierarchyTDO - Fed an array of Certificate Authority 'CA' cert names in cert (.cer|.cert|.crt) format, this will sort the Root CA certs first, followed by any Intermediate certificates (and any non-CA cert files will be appended last). Does not do more than two layers of sorting - CA & IA:  3rd level IAs will all be returned in initial order, along with 2nd-level IAs.
-            .NOTES
-            Version     : 0.0.
-            Author      : Todd Kadrie
-            Website     : http://www.toddomation.com
-            Twitter     : @tostka / http://twitter.com/tostka
-            CreatedDate : 20250711-0423PM
-            FileName    : Set-CertificatesInCAHierarchyTDO.ps1
-            License     : MIT License
-            Copyright   : (c) 2025 Todd Kadrie
-            Github      : https://github.com/tostka/Network
-            Tags        : Powershell,Certificate,TrustChain,Import,Maintenance
-            AddedCredit : REFERENCE
-            AddedWebsite: URL
-            AddedTwitter: URL
-            REVISIONS
-            * 4:31 PM 7/11/2025 init; expanded into full function, adding to vnet
-            .DESCRIPTION
-            Set-CertificatesInCAHierarchyTDO - Fed an array of Certificate Authority 'CA' cert names in cert (.cer|.cert|.crt) format, this will sort the Root CA certs first, followed by any Intermediate certificates (and any non-CA cert files will be appended last). Does not do more than two layers of sorting - CA & IA:  3rd level IAs will all be returned in initial order, along with 2nd-level IAs.
-            .PARAMETER  Path
-            Array of cert-format CA file paths to be ordered[-Path @('c:\path-to\IA.cer','c:\path-to\Root.crt')]
-            .INPUTS
-            String[] Accepts piped input
-            .OUTPUTS
-            System.Array
-            .EXAMPLE
-            gci C:\OpenSSL-CAs\XXXCA\*.crt -recur | select -expand fullname | Set-CertificatesInCAHierarchyTDO;
-            Pipeline example
-            .EXAMPLE
-            PS> Set-CertificatesInCAHierarchyTDO -path (gci C:\OpenSSL-CAs\XXXCA\*.crt -recur | select -expand fullname) -verbose
-            Splatted example: Import specified pfx, using NotBefore and Change number, with -whatif & -verbose output
-            .LINK
-            https://github.org/tostka/powershellBB/
-            #>
-            [CmdletBinding()]
-            [Alias('Set-CertificatesInCAHierarchy', 'sort-CertificatesInCAHierarchy')]
-            PARAM(
-                [Parameter(Position = 0, Mandatory = $True, ValueFromPipeline = $true, HelpMessage = "Array of cert-format CA file paths to be ordered[-Path @('c:\path-to\IA.cer','c:\path-to\Root.crt')]")]
-                [ValidateScript({ Test-Path $_ })]
-                [string[]]$Path
+# Set-CertificatesInCAHierarchyTDO_func
 
-            ) ;
-            Begin {
-                $RootCAs = @() ;
-                $IAs = @() ;
-                $NonCAs = @() ;
-            }
-            PROCESS {
-                foreach ($file in $Path) {
-                    # load each cert
-                    $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($file) ;
-                    $basicConstraints = $certificate.Extensions | Where-Object { $_.Oid.FriendlyName -eq "Basic Constraints" }
-                    if ($basicConstraints) {
-                        $basicConstraintsData = [System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension]$basicConstraints ;
-                        if ($basicConstraintsData.CertificateAuthority) {
-                            $smsg = "$($file) certificate is a Certificate Authority (CA) (basicConstraintsData.CertificateAuthority populated)."
-                            if(gcm Write-MyVerbose -ea 0){Write-MyVerbose $smsg } else {
-                                if($VerbosePreference -eq 'Continue'){if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level VERBOSE }
-                                else{ write-verbose "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; } ;
-                            } ;
-                            # Root CA certs are self-signed: have matching Issuer & Subject
-                            if ($certificate.Issuer -eq $certificate.Subject) {
-                                $smsg = "$($file) have matching Issuer & Subject: Self-signed: likely a Root CA" ;
-                                if(gcm Write-MyVerbose -ea 0){Write-MyVerbose $smsg } else {
-                                    if($VerbosePreference -eq 'Continue'){if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level VERBOSE }
-                                    else{ write-verbose "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; } ;
-                                } ;
-                                $RootCAs += @($file) ;
-                            } else {
-                                $smsg = "$($file) is likely an IA" ;
-                                if(gcm Write-MyVerbose -ea 0){Write-MyVerbose $smsg } else {
-                                    if($VerbosePreference -eq 'Continue'){if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level VERBOSE }
-                                    else{ write-verbose "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; } ;
-                                } ;
-                                $IAs += @($file) ;
-                            } ;
-                        }
+#$cafiles = gci C:\OpenSSL-CAs\TKadrie256CA\*.crt -recur | select -expand fullname | sort ;
+
+#region Set-CertificatesInCAHierarchyTDO ; #*------v Set-CertificatesInCAHierarchyTDO v------
+function Set-CertificatesInCAHierarchyTDO {
+    <#
+    .SYNOPSIS
+    Set-CertificatesInCAHierarchyTDO - Fed an array of Certificate Authority 'CA' cert names in cert (.cer|.cert|.crt) format, this will sort the Root CA certs first, followed by any Intermediate certificates (and any non-CA cert files will be appended last). Does not do more than two layers of sorting - CA & IA:  3rd level IAs will all be returned in initial order, along with 2nd-level IAs.
+    .NOTES
+    Version     : 0.0.
+    Author      : Todd Kadrie
+    Website     : http://www.toddomation.com
+    Twitter     : @tostka / http://twitter.com/tostka
+    CreatedDate : 20250711-0423PM
+    FileName    : Set-CertificatesInCAHierarchyTDO.ps1
+    License     : MIT License
+    Copyright   : (c) 2025 Todd Kadrie
+    Github      : https://github.com/tostka/Network
+    Tags        : Powershell
+    AddedCredit : REFERENCE
+    AddedWebsite: URL
+    AddedTwitter: URL
+    REVISIONS
+    * 4:31 PM 7/11/2025 init; expanded into full function, adding to vnet
+    .DESCRIPTION
+    Set-CertificatesInCAHierarchyTDO - Fed an array of Certificate Authority 'CA' cert names in cert (.cer|.cert|.crt) format, this will sort the Root CA certs first, followed by any Intermediate certificates (and any non-CA cert files will be appended last). Does not do more than two layers of sorting - CA & IA:  3rd level IAs will all be returned in initial order, along with 2nd-level IAs.
+    .PARAMETER  Path
+    Array of cert-format CA file paths to be ordered[-Path @('c:\path-to\IA.cer','c:\path-to\Root.crt')]
+    .INPUTS
+    String[] Accepts piped input
+    .OUTPUTS
+    System.Array
+    .EXAMPLE
+    gci C:\OpenSSL-CAs\XXXCA\*.crt -recur | select -expand fullname | Set-CertificatesInCAHierarchyTDO;
+    Pipeline example
+    .EXAMPLE
+    PS> Set-CertificatesInCAHierarchyTDO -path (gci C:\OpenSSL-CAs\XXXCA\*.crt -recur | select -expand fullname) -verbose
+    Splatted example: Import specified pfx, using NotBefore and Change number, with -whatif & -verbose output
+    .LINK
+    https://github.org/tostka/powershellBB/
+    #>
+    [CmdletBinding()]
+    [Alias('Set-CertificatesInCAHierarchy','sort-CertificatesInCAHierarchy')]
+    PARAM(
+        [Parameter(Position=0,Mandatory=$True,ValueFromPipeline=$true,HelpMessage="Array of cert-format CA file paths to be ordered[-Path @('c:\path-to\IA.cer','c:\path-to\Root.crt')]")]
+            [ValidateScript({Test-Path $_})]
+            [string[]]$Path
+    ) ;
+    Begin{
+    $RootCAs = @() ;
+    $IAs = @() ;
+    $NonCAs = @() ;
+    }
+    PROCESS{
+        foreach ($file in $Path) {
+            # load each cert
+            $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($file) ;
+            $basicConstraints = $certificate.Extensions | Where-Object {$_.Oid.FriendlyName -eq "Basic Constraints"}
+            if ($basicConstraints) {
+                $basicConstraintsData = [System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension]$basicConstraints ;
+                if ($basicConstraintsData.CertificateAuthority) {
+                    write-verbose "$($file) certificate is a Certificate Authority (CA) (basicConstraintsData.CertificateAuthority populated)."
+                    # Root CA certs are self-signed: have matching Issuer & Subject
+                    if ($certificate.Issuer -eq $certificate.Subject) {
+                        write-verbose "$($file) have matching Issuer & Subject: Self-signed: likely a Root CA" ;
+                        $RootCAs += @($file) ;
                     } else {
-                        write-verbose  "$($file) certificate in the array is NOT a Certificate Authority (CA) (CertificateAuthority UNPOPULATED)."
-                        $NonCAs += @($file) ;
-                    }
-                } ;
+                        write-verbose "$($file) is likely an IA" ;
+                        $IAs += @($file) ;
+                    } ;
+                }
+            } else {
+                write-verbose  "$($file) certificate in the array is NOT a Certificate Authority (CA) (CertificateAuthority UNPOPULATED)."
+                $NonCAs += @($file) ;
             }
-            END {
-                # re-combine, Roots, then IAs
-                write-verbose  "`RootCAs:`n$(($RootCAs|out-string).trim())" ;
-                write-verbose  "`IAs:`n$(($IAs|out-string).trim())" ;
-                write-verbose  "`NonCAs:`n$(($NonCAs|out-string).trim())" ;
-                #[string[]]
-                [array]$cafiles = $(@($RootCAs); @($IAs); @($NonCAs)) ;
-                $cafiles | write-output ;
-            }
-        }
-#endregion SET_CERTIFICATESINCAHIERARCHYTDO ; #*------^ END FUNCTION Set-CertificatesInCAHierarchyTDO  ^------
+        } ;
+    }
+    END{
+        # re-combine, Roots, then IAs
+        write-verbose  "`RootCAs:`n$(($RootCAs|out-string).trim())" ;
+        write-verbose  "`IAs:`n$(($IAs|out-string).trim())" ;
+        write-verbose  "`NonCAs:`n$(($NonCAs|out-string).trim())" ;
+        #[string[]]
+        [array]$cafiles = $(@($RootCAs);@($IAs);@($NonCAs)) ;
+        $cafiles | write-output ;
+    }
+}
+#endregion Set-CertificatesInCAHierarchyTDO ; #*------^ END Set-CertificatesInCAHierarchyTDO ^------
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUDrcWkVMRzgxmXZNZIuub3U33
-# k66gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU8QNOszZ6dH8DonhGaG3I+GNo
+# iPugggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -116,9 +107,9 @@ function Set-CertificatesInCAHierarchyTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTineG8
-# XC/oHooYfZAte1GV/zx4cDANBgkqhkiG9w0BAQEFAASBgLBw+UL3YMZ3XfxJS+gg
-# E2u7HfxtX66mgQhthNvONYDN2nEWpI7HIxknXgOjTjqOKfm0tGkUZUb1+j7+fvfI
-# MGCflHE67yKLdHMRbWHWtsU5yta/+vkG1TKqiDdfxVqPmojkBSSs3YZQBSqnwHJ/
-# wzLRoUfZ8jCjExsiERGq4yJG
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTENJgM
+# hFFLNOFWbo4XGJjCnf5DhDANBgkqhkiG9w0BAQEFAASBgErS5P8Uk9ivR92lyMrG
+# gDIB5Qz+XUpCZfQmp5JJ6kxbXkssFa3YytL1t5vDLit9UiNJsPcuhAQsoSFTe35C
+# uymiXtjNe4MMSzyt56VDUnf9Uja7BKd7eqjcvA05TUpRoW7VsoFwPkluzvzcbR6L
+# HNsa2wFMjbQ578LPuUc3pDLg
 # SIG # End signature block

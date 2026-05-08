@@ -1,4 +1,7 @@
-﻿#region INSTALL_MYPACKAGETDO ; #*------v FUNCTION Install-MyPackageTDO v------
+﻿# Install-MyPackageTDO.ps1
+
+
+#region INSTALL_MYPACKAGETDO ; #*------v Install-MyPackageTDO v------
 Function Install-MyPackageTDO {
             <#
             .SYNOPSIS
@@ -18,7 +21,6 @@ Function Install-MyPackageTDO {
             AddedWebsite: eightwone.com
             AddedTwitter: URL
             REVISIONS
-            * 1:31 PM 12/19/2025 coded in alts to $State dep (defers to $global varis, discovered during xopBuildLibrary.psm1 load)
             * 10:48 AM 10/6/2025 reworked demos; add var code for lack of $State[]; add alias Install-MyPackage
             * 12:06 PM 10/2/2025 ren Install-MyPackage -> Install-MyPackageTDO, alias original & 821 variant
             *11:15 AM 8/15/2025 add:explicit Position tags to params (PS default assumes in decl order, this codifies); fixed CBH param specs errors; brought in deferring $script varis from source; add: optional -FilePath, to backfill where $script scope $State['InstallPath'] isn't populated.
@@ -174,7 +176,7 @@ Function Install-MyPackageTDO {
             }
             #$RunFrom= $State['InstallPath']
             # $State['InstallPath'] is a hashtable configured by install-Exchange15-TTC.ps1. In it's absence, fall back to local -FilePath.
-            if($State -and $State['InstallPath']){
+            if($State['InstallPath']){
                 $RunFrom= $State['InstallPath']
             }elseif($FilePath){
                 $RunFrom = $FilePath
@@ -286,13 +288,14 @@ Function Install-MyPackageTDO {
                 } ;
             }
         }
-#endregion INSTALL_MYPACKAGETDO ; #*------^ END FUNCTION Install-MyPackageTDO  ^------
+#endregion INSTALL_MYPACKAGETDO ; #*------^ END Install-MyPackageTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU8pQsQt3Rk9fd+7jrwLuSCjef
-# 4BSgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUht/ESJT1HECukrgIz4irTvx9
+# mqigggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -307,9 +310,9 @@ Function Install-MyPackageTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRuUbVv
-# Ehr8cvRsPPgXucs4BqF6/zANBgkqhkiG9w0BAQEFAASBgFQz2DNBvm9zC60qkwgi
-# toUR57j829nInEtysp7SVxnPZUR/Uogoi9Qz9qSTjcBhJwDJkxtWemq4HUxjVHxy
-# gp8B2LJnqqX0gZRwFqIA/IF06sMT6Mj0iuRXqii3hd/QPN01rOsRNSaVdrhVIJtY
-# z2OCJ0APny5Tp4/JvoQyyqWy
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQhYkSw
+# gjQ/riw0Yovc9sDBkQ5ChzANBgkqhkiG9w0BAQEFAASBgDStSbzjTSeqYunj7ERt
+# jY/x5E1caOfFbOG/7oXnsOls1NOpSsqwUYdVmZihXf4XphlG6rZ6XC6xC0qgfUbn
+# Tfgw6qgFl+zzRW8cT4lt/rTr5qagfD1nBClWs19OHXN8pKBtjDAbpQJsIxlzKR8Y
+# EZiHI4OdDaU8scDKmQuswokg
 # SIG # End signature block

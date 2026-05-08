@@ -1,0 +1,288 @@
+﻿# Remove-InvalidFileNameCharsTDO.ps1
+
+#region REMOVE_INVALIDFILENAMECHARSTDO ; #*------v Remove-InvalidFileNameCharsTDO v------
+function Remove-InvalidFileNameCharsTDO{
+    <#
+    .SYNOPSIS
+    Remove-InvalidFileNameCharsTDO.ps1 - Removes characters from a string that are not valid in Windows file names.
+    .NOTES
+    Version     : 1.1.2
+    Author      : Todd Kadrie
+    Website     :	http://www.toddomation.com
+    Twitter     :	@tostka / http://twitter.com/tostka
+    CreatedDate : 2025-03-01
+    FileName    : Remove-InvalidFileNameCharsTDO.ps1
+    License     : http://creativecommons.org/licenses/by-sa/4.0/
+    Copyright   : 2016 Chris Carter
+    Github      : https://github.com/tostka/verb-io
+    Tags        : Powershell,RegularExpression,String,filesystem
+    AddedCredit : Chris Carter
+    AddedWebsite:	https://gallery.technet.microsoft.com/Remove-Invalid-Characters-39fa17b1
+    AddedTwitter:	URL
+    REVISIONS
+    * 10:39 AM 1/30/2026 add alias: 'Remove-IllegalFileNameChars' (cover unupdated calls)
+    * 11:46 AM 1/2/2026 added 1-liner rgx build demo ; added region
+        N.B. Had issues with the Escape & Regex conversion order in other attempts to use 
+            [System.IO.Path]::GetInvalidFileNameChars(), 
+        -> confirmed this splits them into descrete steps that should always work (rgx escape, before -join, before making a [range], before [regex] conversion
+        Do the process out of order and the built regex drops a LOT of key chars (pipe etc). e.g. this long-standing broken version:
+          PS> $invalidChars = [IO.Path]::GetInvalidFileNameChars() -join '' ; 
+    * 7:15 PM 3/1/2025 spliced in missing -ReplaceBrackets & -dashReplaceChars handling pieces in the unpathed else block (wasn't doing those removals as intended); 
+        added -ReplaceBrackets (sub square brackets with parenthesis), and -DashReplaceChars (characters to be replaced with chars specified by the new -DashReplacement character or string); 
+        added additional exmpl with pipeline support
+    * 10:56 PM 2/13/2025 converted to function, expanded CBH
+    * August 8, 2016 v1.5.1  CC posted latest copy
+    .DESCRIPTION
+    Remove-InvalidFileNameCharsTDO accepts a string and removes characters that are invalid in Windows file names. 
+
+    This is an extension of Chris Carter's original simpler function, extended with support for replacement of brackets (to parenthesis) and configurable additional characters. 
+
+    The -Name parameter can also clean file paths. If the string begins with "\\" or a drive like "C:\", it will then treat the string as a file path and clean the strings between "\". This has the side effect of removing the ability to actually remove the "\" character from strings since it will then be considered a divider.
+    
+    Use of -RemoveSpace will crush out all space charcters (replace with nothing). 
+
+    Use of the additional -ReplaceBrackets switch will replace square brackets ([]) with matching paranthesis characters. 
+
+    You can optionally use the -DashReplacement parameter to specifify a string array of characters to be replaced with a character/string specified by the new -DashReplaceChars parameter. 
+
+    The resulting cleaned string or path will be returned to the pipeline. 
+ 
+    The Replacement parameter will replace the invalid characters with the specified string. To remove rather than replace the invalid characters, use -RemoveSpace
+ 
+    The Name parameter can also clean file paths. If the string begins with "\\" or a drive like "C:\", it will then treat the string as a file path and clean the strings between "\". This has the side effect of removing the ability to actually remove the "\" character from strings since it will then be considered a divider.
+    
+    .PARAMETER Name
+    Array of filenames or fullnames to strip of invalid characters.[-name @('filename.ext','c:\pathto\file.ext')]
+    .PARAMETER Replacement
+    Specifies the string to use as a replacement for the invalid characters (leave blank to delete without replacement).[-Replacement ' ']
+    .PARAMETER RemoveSpace
+    Switch to include the space character (U+0020) in the removal process.[-Removespace]
+    .PARAMETER ReplaceBrackets
+    Switch to replace square brackets with paranthesis characters[-ReplaceBrackets]
+    .PARAMETER DashReplaceChars
+    Characters to be replaced with the -DashReplacement specification[-DashReplaceChars @('|','~')]
+    .PARAMETER DashReplacement
+    Character to use for all -DashReplacement characters (defaults to dash '-')[-DashReplacement 'x']
+    .INPUTS
+    System.String
+    Remove-InvalidFileNameCharsTDO accepts System.String objects in the pipeline.
+ 
+    Remove-InvalidFileNameCharsTDO accepts System.String objects in a property Name from objects in the pipeline.
+ 
+    .OUTPUTS
+    System.String 
+    .EXAMPLE
+    PS> Remove-InvalidFileNameCharsTDO -Name "<This /name \is* an :illegal ?filename>.txt"
+    Output: This name is an illegal filename.txt
+ 
+    This command will strip the invalid characters from the string and output a clean string.
+    .EXAMPLE
+    PS> Remove-InvalidFileNameCharsTDO -Name "<This /name \is* an :illegal ?filename>.txt" -RemoveSpace
+    Output: Thisnameisanillegalfilename.txt
+ 
+    This command will strip the invalid characters from the string and output a clean string, removing the space character (U+0020) as well.
+    .EXAMPLE
+    PS> Remove-InvalidFileNameCharsTDO -Name '\\Path/:|?*<\With:*?>\:Illegal /Characters>?*.txt"'
+    Output: \\Path\With\Illegal Characters.txt
+ 
+    This command will strip the invalid characters from the path and output a valid path. Note: it would not be able to remove the "\" character.
+    .EXAMPLE
+    PS> Remove-InvalidFileNameCharsTDO -Name '\\Path/:|?*<\With:*?>\:Illegal /Characters>?*.txt"' -RemoveSpace
+    Output: \\Path\With\IllegalCharacters.txt
+ 
+    This command will strip the invalid characters from the path and output a valid path, also removing the space character (U+0020) as well. Note: it would not be able to remove the "\" character.
+    .EXAMPLE
+    PS> Remove-InvalidFileNameCharsTDO -Name "<This /name \is* an :illegal ?filename>.txt" -Replacement +
+    Output: +This +name +is+ an +illegal +filename+.txt
+ 
+    This command will strip the invalid characters from the string, replacing them with a "+", and outputting the result string.
+    .EXAMPLE
+    PS> Remove-InvalidFileNameCharsTDO -Name "<This /name \is* an :illegal ?filename>.txt" -Replacemet + -RemoveOnly "*", 58, 0x3f
+    Output: +This +name +is an illegal filename+.txt
+ 
+    This command will strip the invalid characters from the string, replacing them with a "+", except the "*", the charcter with a decimal value of 58 (:), and the character with a hexidecimal value of 0x3f (?). These will simply be removed, and the resulting string output.
+    .EXAMPLE
+    PS> $results = Remove-InvalidFileNameCharsTDO  -Name "C:\vidtmp\convert\Westworld\001 - Westworld S4 Official Soundtrack ｜ Main Title Theme - Ramin Djawadi ｜ WaterTower(UL20220815-H9qE9D0TjJo).mp3" -Verbose -ReplaceBrackets ;
+    PS> $results ; 
+
+        C:\vidtmp\convert\Westworld\001 - Westworld S4 Official Soundtrack - Main Title Theme - Ramin Djawadi - WaterTower(UL20220815-H9qE9D0TjJo).mp3
+
+    Demo use of -replacebrackets & uses a -Name string with a targeted 
+    .EXAMPLE
+    PS> $results = "\\jun|/k{$[;:]left" | Remove-InvalidFileNameCharsTDO -Verbose -ReplaceBrackets
+    PS> $results ; 
+
+        junk{$(;)left
+        
+    Demo of mixed strip with bracket replacements
+    .EXAMPLE
+    PS> [regex]$rgxInvalidFileNameChars = "[{0}]" -f ( [RegEx]::Escape([IO.Path]::GetInvalidFileNameChars()) -join '') ; 
+    PS> gci c:\vidtmp\convert\* -recur | ?{$_.name  -match $rgxInvalidFileNameChars.tostring()} |%{
+    PS>     $thisfile = $_ ; 
+    PS>     write-host "==$($thisfile.fullname):" ; 
+    PS>     $thisfile | rename-item -newname ($thisfile.name -replace($rgxInvalidFileNameChars," ")) -verbose -whatif:$($whatif)
+    PS> } ; 
+    Demo a clean simple scriptblock version of this, to add to other scripts, wo full use of this: 
+    Avoids issues by: pre-escaping the chars, then defines the block as a range and then coerces to rgx    
+    .Link
+    System.RegEx
+    .Link
+    about_Join
+    .Link
+    about_Operators
+    .LINK
+    https://github.com/tostka/verb-io
+    #>
+    #[CmdletBinding(HelpURI='https://gallery.technet.microsoft.com/scriptcenter/Remove-Invalid-Characters-39fa17b1')]
+    # defer to updated local CBH
+    [CmdletBinding()]
+    [Alias('Remove-InvalidFileNameChars','Remove-IllegalFileNameChars')]
+    Param(
+        [Parameter(Mandatory=$true,Position=0,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true,
+            HelpMessage="Array of filenames or fullnames to strip of invalid characters.[-name @('filename.ext','c:\pathto\file.ext')]")]
+            [String[]]$Name,
+        [Parameter(Position=1,HelpMessage="Specifies the string to use as a replacement for the invalid characters (leave blank to delete without replacement).[-Replacement ' ']")]
+            [String]$Replacement='',
+        [Parameter(HelpMessage="Switch to include the space character (U+0020) in the removal process.[-Removespace]")]
+            [switch]$RemoveSpace,
+        [Parameter(HelpMessage="Switch to replace square brackets with paranthesis characters[-ReplaceBrackets]")]
+            [switch]$ReplaceBrackets,
+        [Parameter(HelpMessage="Characters to be replaced with the -DashReplacement specification (default includes a pipe-lookalike that doesn't replace properly as part of a regex)[-DashReplaceChars @('|','~')]")]
+            [string[]]$DashReplaceChars = @("｜"),
+        [Parameter(HelpMessage="Character to use for all -DashReplacement characters (defaults to dash '-')[-DashReplacement 'x']")]
+            [string]$DashReplacement='-'
+    ) ; 
+    BEGIN {
+        # dashReplaceChars addresses issues getting pipe-lookalikes purged, that don't come out of the OS list; or even properly match or replace as part of a regex
+
+        #Get an array of invalid characters from the OS
+        $arrInvalidChars = [System.IO.Path]::GetInvalidFileNameChars()
+
+        
+        #Cast into a string, adding the space character
+        $(@($arrInvalidChars);@(' '))  | 
+            foreach -begin {[string]$rgxChars = $null } -process {$rgxChars+=$_} ; 
+        [regex]$rgxInvalidCharsWithSpace = '[' + [regex]::escape($rgxChars) + ']' ;
+        write-verbose "`$rgxInvalidCharsWithSpace: $($rgxInvalidCharsWithSpace.tostring())" ; 
+
+        # cast to string wo space char
+        $arrInvalidChars | 
+            foreach -begin {[string]$rgxChars = $null } -process {$rgxChars+=$_} ; 
+        [regex]$rgxinvalidCharsNoSpace = '[' + [regex]::escape($rgxChars) + ']' ;
+        write-verbose "`$rgxinvalidCharsNoSpace: $($rgxinvalidCharsNoSpace.tostring())" ; 
+
+        # build the $dashReplaceChars into a rgx as well
+        $dashReplaceChars | 
+            foreach -begin {[string]$rgxChars = $null } -process {$rgxChars+=$_} ; 
+        [regex]$rgxdashReplaceChars = '[' + [regex]::escape($rgxChars) + ']' ;
+        write-verbose "`$rgxdashReplaceChars: $($rgxdashReplaceChars.tostring())" ; 
+
+        #Check that the -Replacement specified does not have invalid characters itself
+        if ($RemoveSpace) {
+            if ($Replacement -match $rgxInvalidCharsWithSpace) {
+                Write-Error "The Replacement string also contains invalid filename characters."; break ; 
+            }
+        } else {
+            if ($Replacement -match $rgxInvalidCharsNoSpace) {
+                Write-Error "The Replacement string also contains invalid filename characters."; break ; 
+            }
+        }
+
+        #*======v FUNCTIONS v======
+        #*------v Function Remove-Chars v------
+        Function Remove-Chars {
+            PARAM(
+                [Parameter(Mandatory=$true,Position=0,HelpMessage="String to be processed")]
+                    [string]$String,
+                [Parameter(Position=0,HelpMessage="Specifies the string to use as a Replacement for the invalid characters.")]
+                    [string]$Replacement,
+                [Parameter(HelpMessage="The RemoveSpace parameter will include the space character (U+0020) in the removal process.")]
+                    [switch]$RemoveSpace
+            )
+            #Replace the invalid characters with a blank string (removal) or the $Replacement value
+            #Perform replacement based on whether spaces are desired or not
+            if ($RemoveSpace) {
+                [RegEx]::Replace($String, $rgxInvalidCharsWithSpace, $Replacement) | write-output ;
+            } else {
+                [RegEx]::Replace($String, $rgxInvalidCharsNoSpace, $Replacement) | write-output ;
+            }
+        } 
+        #*------^ END Function Remove-Chars ^------      
+        #*======^ END FUNCTIONS  ^======
+
+
+    } ;  # BEG-E
+    PROCESS {
+        foreach ($n in $Name) {
+            $sBnr3="`n#*~~~~~~v PROCESSING : $($n) v~~~~~~" ; 
+            write-verbose $sBnr3; 
+            #Check if the string matches a valid path
+            if ($n -match '(?<start>^[a-zA-z]:\\|^\\\\)(?<path>(?:[^\\]+\\)+)(?<file>[^\\]+)$') {
+                #Split the path into separate directories
+                $path = $Matches.path -split '\\'
+
+                #This will remove any empty elements after the split, eg. double slashes "\\"
+                $path = $path | Where-Object {$_}
+                #Add the filename to the array
+                $path += $Matches.file
+
+                #Send each part of the path, except the start, to the removal function
+                $cleanPaths = foreach ($p in $path) {
+                    write-verbose "`$p: $($p)" ; 
+                    $buffer = Remove-Chars -String $p -Replacement $Replacement -RemoveSpace:$($RemoveSpace) ;
+                    if($ReplaceBrackets){
+                        $buffer = $buffer -replace "\[","(" -replace "\]",")" ; 
+                    }; 
+                    if($rgxdashReplaceChars){
+                        $buffer = $buffer -replace $rgxdashReplaceChars,$dashReplacement ; 
+                    }; 
+                    $buffer | write-output  ; 
+                }
+                #Remove any blank elements left after removal.
+                $cleanPaths = $cleanPaths | Where-Object {$_}
+                write-verbose "`$cleanPaths: $($cleanPaths)" ; 
+            
+                #Combine the path together again
+                $Matches.start + ($cleanPaths -join '\') | write-output ; 
+            } else {
+                #String is not a path, so send immediately to the removal function
+                $buffer = Remove-Chars -String $N -Replacement $Replacement -RemoveSpace:$($RemoveSpace) | write-output ; 
+                if($ReplaceBrackets){
+                    $buffer = $buffer -replace "\[","(" -replace "\]",")" ; 
+                }; 
+                if($rgxdashReplaceChars){
+                    $buffer = $buffer -replace $rgxdashReplaceChars,$dashReplacement ; 
+                }; 
+                $buffer | write-output ; 
+            } ; 
+            write-verbose $sBnr3.replace('~v','~^').replace('v~','^~')
+        } ;  # loop-E
+    } ;  # PROC-E
+} ; 
+#endregion REMOVE_INVALIDFILENAMECHARSTDO ; #*------^ END Remove-InvalidFileNameCharsTDO ^------
+
+# SIG # Begin signature block
+# MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUUq13n/UiLCB7EybfQA+XLW2N
+# ICmgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
+# Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
+# ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
+# a+NnFYNRPPa8Bnm071ohGe27jNWKPVUbDfd0OY2sqCBQCEFVb5pqcIECRRnlhN5H
+# +EEJmm2x9AU0uS7IHxHeUo8fkW4vm49adkat5gAoOZOwbuNntBOAJy9LCyNs4F1I
+# KKphP3TyDwe8XqsEVwB2m9FPAgMBAAGjdjB0MBMGA1UdJQQMMAoGCCsGAQUFBwMD
+# MF0GA1UdAQRWMFSAEL95r+Rh65kgqZl+tgchMuKhLjAsMSowKAYDVQQDEyFQb3dl
+# clNoZWxsIExvY2FsIENlcnRpZmljYXRlIFJvb3SCEGwiXbeZNci7Rxiz/r43gVsw
+# CQYFKw4DAh0FAAOBgQB6ECSnXHUs7/bCr6Z556K6IDJNWsccjcV89fHA/zKMX0w0
+# 6NefCtxas/QHUA9mS87HRHLzKjFqweA3BnQ5lr5mPDlho8U90Nvtpj58G9I5SPUg
+# CspNr5jEHOL5EdJFBIv3zI2jQ8TPbFGC0Cz72+4oYzSxWpftNX41MmEsZkMaADGC
+# AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
+# Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
+# AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBROzDHO
+# k5HO7KVJ3pJ717cFXQRyeTANBgkqhkiG9w0BAQEFAASBgDDxCHuXkC0RZ3JDZ7j7
+# p5QXWjAN4ggftxn75xr0HjsqMN13mtLBQSmXwRH/ldvbGTNAWG87/CFSweYSjkFn
+# jnLE0vUTxHOXeluJHxJaDgRQT5iW+aA2hb0A16B0RL+Ahac6p/O95/MRjmVrbWm9
+# MTW4doB+VsofhMtyhvj2lELh
+# SIG # End signature block

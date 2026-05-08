@@ -1,5 +1,7 @@
-﻿#region TEST_RDPDRIVEREDIRECTIONTDO ; #*------v FUNCTION test-RDPDriveRedirectionTDO v------
-function test-RDPDriveRedirectionTDO {
+# test-RDPDriveRedirectionTDO.ps1
+
+    #region TEST_RDPDRIVEREDIRECTIONTDO ; #*------v test-RDPDriveRedirectionTDO v------
+    function test-RDPDriveRedirectionTDO {
         <#
         .SYNOPSIS
         test-RDPDriveRedirectionTDO.ps1 - From RDP desktop, test for available drives redirected into \\tsclient mappings
@@ -129,14 +131,13 @@ function test-RDPDriveRedirectionTDO {
                 $drives | write-output ;     
             } ;            
         }
-    }
-#endregion TEST_RDPDRIVEREDIRECTIONTDO ; #*------^ END FUNCTION test-RDPDriveRedirectionTDO  ^------
-
+    } ;
+    #endregion TEST_RDPDRIVEREDIRECTIONTDO ; #*------^ END test-RDPDriveRedirectionTDO ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUkQ1mYRHDx0+oBVWJwFjnSlrR
-# kEugggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU+VuXurtgM14lseNFiyo7km2W
+# lTqgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -151,9 +152,9 @@ function test-RDPDriveRedirectionTDO {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTZAFR7
-# qnZnWzxPuNtlQZc7uTEqwzANBgkqhkiG9w0BAQEFAASBgD34Ihpk/kWdfKtj26as
-# 4wtPHYtQnTnbNSmtO5y5qlclXjLqD7dOfan4vb7dTNJBKilzCiOxvU3a1ResJPM3
-# a6BuoHMkogLpNn3bbIsx3fujlutL1gHxfPnptTGiDiu6WpXSnyvogWCA2dNJnQ1K
-# 1ZaZeMIE4VX85wC2i4dHxXyg
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTfp9sZ
+# hqe+dHx2mSFn2vw2H9WgqjANBgkqhkiG9w0BAQEFAASBgA4BtR7UzgIZpxx80D/Y
+# oDwojGylSc1cS0mpsxN+DWyvfHdCtoVTQZcL1i7KEcDV/o8u30P6INwdCeoBR+fV
+# Y0IB248vuemHRkL/X9yLRtmedKwpZmRpjf6xVWqE7sFGyfPenWaBNwgeFTxuCsxm
+# gSqbFMDdj97HKcfnskIUBXcr
 # SIG # End signature block

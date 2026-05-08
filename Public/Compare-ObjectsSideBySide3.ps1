@@ -1,5 +1,8 @@
-﻿#region COMPARE_OBJECTSSIDEBYSIDE3 ; #*------v FUNCTION Compare-ObjectsSideBySide3 v------
-function Compare-ObjectsSideBySide3 {
+﻿# Compare-ObjectsSideBySide3.ps1
+
+    #region COMPARE_OBJECTSSIDEBYSIDE3 ; #*------v Compare-ObjectsSideBySide3 v------
+    #if(-not(gi function:Compare-ObjectsSideBySide3 -ea 0)){
+        function Compare-ObjectsSideBySide3 {
             <#
             .SYNOPSIS
             Compare-ObjectsSideBySide3() - Displays four objects side-by-side comparatively in console
@@ -112,13 +115,13 @@ function Compare-ObjectsSideBySide3 {
                 New-Object PSObject -Property $properties ;
             } ;
         }
-#endregion COMPARE_OBJECTSSIDEBYSIDE3 ; #*------^ END FUNCTION Compare-ObjectsSideBySide3  ^------
-
+    #}
+    #endregion COMPARE_OBJECTSSIDEBYSIDE3 ; #*------^ END Compare-ObjectsSideBySide3 ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUZ/YgTYblKwEfpLrkMN6SAtAZ
-# 2mOgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUQO6j85gwcYbmcZLo6HoN1ZT2
+# KKegggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -133,9 +136,9 @@ function Compare-ObjectsSideBySide3 {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTSjIYp
-# +dAtQs4j7Hq4mOcgDstJWjANBgkqhkiG9w0BAQEFAASBgKZZwqXwX3chMKPpSaMy
-# L3lBxM6oznzAajpldYiKEgELnDwJI2rB7E44u/9WFLKYUtcmaMEj/BhjyyrSClg5
-# ps3ZsmIQQgQI5zSIM1h3xFeKPCfaH+ht0qMHQM2FIoWHpkmTY/SSIpt+GqmT78EG
-# 7bO5pn4Knp6lyQSofxye7SHe
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTwBEvl
+# h6PsnOxazqETvTbbETd0DjANBgkqhkiG9w0BAQEFAASBgBBNE7somYAzrQN5+Fd9
+# h8pX3FvvkiGD7PxhAFzkL6tmsVfaMmpkkk9rLJiOmxuDVcNFlTBhcHCk2DoQJpt7
+# 1Vot+aM7hksaIdPUWFwgMf3LLWdKrpVxI2wgDaKrrLixSkK0W86cqW5SmZDbIJrF
+# S71Wzvb6xRPfZVWNjIOci1BN
 # SIG # End signature block

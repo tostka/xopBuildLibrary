@@ -1,24 +1,56 @@
-﻿#region TEST_REGISTRYKEY ; #*------v FUNCTION Test-RegistryKey v------
-function Test-RegistryKey {
-                [OutputType('bool')]
-                [CmdletBinding()]
-                PARAM(
-                    [Parameter(Mandatory=$true)]
-                        [ValidateNotNullOrEmpty()]
-                        [string]$Key
-                )
-                $ErrorActionPreference = 'Stop'
-                if (Get-Item -Path $Key -ErrorAction Ignore) {
-                    $true
-                }
-            }
-#endregion TEST_REGISTRYKEY ; #*------^ END FUNCTION Test-RegistryKey  ^------
-
+﻿
+    #region TEST_REGISTRYKEY ; #*------v Test-RegistryKey v------    
+    function Test-RegistryKey {
+        <#
+        .SYNOPSIS
+        Test-RegistryKey.ps1 - Checks specified registry key for presence (gi)
+        .NOTES
+        Version     : 1.0.0
+        Author      : Todd Kadrie
+        Website     :	http://www.toddomation.com
+        Twitter     :	@tostka / http://twitter.com/tostka
+        AddedCredit : Adam Bertram
+        AddedWebsite:	https://adamtheautomator.com/pending-reboot-registry-windows/
+        AddedTwitter:	@adambertram
+        CreatedDate : 20201014-0826AM
+        FileName    : Test-RegistryKey.ps1
+        License     : MIT License
+        Copyright   : (c) 2020 Todd Kadrie
+        Github      : https://github.com/tostka/verb-XXX
+        Tags        : Powershell,System,Reboot
+        REVISIONS
+        * 1:35 PM 4/25/2022 psv2 explcit param property =$true; regexpattern w single quotes.
+        * 5:03 PM 1/14/2021 init, minor CBH mods
+        * 7/29/19 AB's posted version
+        .DESCRIPTION
+        Test-RegistryKey.ps1 - Checks specified registry key for presence (gi)
+        .PARAMETER  Key
+        Full registkey to be tested [-Key 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending']
+        .EXAMPLE
+        Test-RegistryKey -Key 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending' ;
+        Tests one of the Pending Reboot keys
+        .LINK
+        https://github.com/tostka/verb-IO
+        #>
+        [OutputType('bool')]
+        [CmdletBinding()]
+        #[Alias('get-ScheduledTaskReport')]
+        PARAM(
+            [Parameter(Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$Key
+        ) ;
+        $ErrorActionPreference = 'Stop' ;
+        if (Get-Item -Path $Key -ErrorAction Ignore) {
+            $true | write-output ;
+        } ;
+    }
+    #endregion TEST_REGISTRYKEY ; #*------^ END Test-RegistryKey ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUZXTtxO+WBm/zYTKTCNIaJahG
-# 8AigggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUw23qCXrkBzUyhBKTIbjc8GkX
+# idGgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -33,9 +65,9 @@ function Test-RegistryKey {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBREVjxB
-# H0DCKoQHYkfWgyyaCpmi7TANBgkqhkiG9w0BAQEFAASBgB8TmyGXy7ny/PT9kBFh
-# ehW7/gYCV1gNhzWfOxLRC/t/IsYVez1cosZc5ECTODvnGdO6yBFaXIiflyGh26oR
-# PRsxxqGUEZzbfIDgcUr/PB02JiQj5bA3m4kZ+14xow9a6wsKketIj392ywM2vDvT
-# cT3QAjL4K9/DV0Tpj5WqCNpH
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTYVvHp
+# Y5bf8na+3+1zYP8/KmNJjzANBgkqhkiG9w0BAQEFAASBgEGRXQNF54fkylJR+wYu
+# VvcVqBdkZK6MDk6mW0AsZHPNpTpwkFcYsP9Dg+ZGKv0KUlTcHjZmzglvJUvGPcFr
+# I4utakVlr8iptb6q2u2cTLmWSTZ5EUiPrlcDob5Lw04Quo2ksLAJ0y5KPkA+FLH8
+# BV5lngJh3YjeAcgMKH4jcU/R
 # SIG # End signature block

@@ -1,5 +1,7 @@
-﻿#region ENABLE_OPENFILESECURITYWARNINGTDO ; #*------v FUNCTION Enable-OpenFileSecurityWarningTDO v------
-function Enable-OpenFileSecurityWarningTDO{
+﻿# Enable-OpenFileSecurityWarningTDO.ps1
+
+    #region ENABLE_OPENFILESECURITYWARNING ; #*------v Enable-OpenFileSecurityWarningTDO v------
+    function Enable-OpenFileSecurityWarningTDO{
         <#
         .SYNOPSIS
         Enable-OpenFileSecurityWarningTDO - Restores Open File - Security Warning popup prompts.
@@ -18,7 +20,6 @@ function Enable-OpenFileSecurityWarningTDO{
         AddedWebsite: http://eightwone.com
         AddedTwitter: URL        
         REVISIONS
-        * 4:20 PM 10/8/2025 added back differential write-my* support
         * 3:00 PM 9/18/2025 port to vdesk from xopBuildLibrary; add CBH, and Adv Function specs ; 
             remove the write-my*() support (defer to native w-l support)
         * 10:45 AM 8/6/2025 added write-myOutput|Warning|Verbose support (for xopBuildLibrary/install-Exchange15.ps1 compat) 
@@ -48,13 +49,10 @@ function Enable-OpenFileSecurityWarningTDO{
         https://github.org/tostka/verb-Desktop/
         #>
         [CmdletBinding()]
-        [alias('Enable-OpenFileSecurityWarning')]
+        [alias('Enable-OpenFileSecurityWarning821')]
         PARAM() ;
         $smsg = "Enabling File Security Warning dialog"
-        if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
-            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
-        } ;
+        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level PROMPT } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
         #Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Associations' -Name 'LowRiskFileTypes' -ErrorAction SilentlyContinue
         $pltrvIP=[ordered]@{
             Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Associations' ;
@@ -62,18 +60,13 @@ function Enable-OpenFileSecurityWarningTDO{
             erroraction = 'SilentlyContinue' ; 
         } ;        
         $smsg = "Remove-ItemProperty w`n$(($pltrvIP|out-string).trim())" ; 
-        if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
-            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
-        } ;
+        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
         TRY{
             Remove-ItemProperty @pltrvIP | out-null ; 
         } CATCH {
             $ErrTrapd=$Error[0] ;
             $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
-            if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
-                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            } ;
+            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
         } ; 
         #Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments' -Name 'SaveZoneInformation' -ErrorAction SilentlyContinue
         $pltrvIP=[ordered]@{
@@ -82,18 +75,13 @@ function Enable-OpenFileSecurityWarningTDO{
             erroraction = 'SilentlyContinue' ; 
         } ;        
         $smsg = "Remove-ItemProperty w`n$(($pltrvIP|out-string).trim())" ; 
-        if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
-            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
-        } ;
+        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
         TRY{
             Remove-ItemProperty @pltrvIP | out-null ; 
         } CATCH {
             $ErrTrapd=$Error[0] ;
             $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
-            if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
-                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            } ;
+            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
         } ;  
         # Remove-ItemProperty -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Associations' -Name 'LowRiskFileTypes' -ErrorAction SilentlyContinue
         $pltrvIP=[ordered]@{
@@ -102,18 +90,13 @@ function Enable-OpenFileSecurityWarningTDO{
             erroraction = 'SilentlyContinue' ; 
         } ;        
         $smsg = "Remove-ItemProperty w`n$(($pltrvIP|out-string).trim())" ; 
-        if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
-            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
-        } ;
+        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
         TRY{
             Remove-ItemProperty @pltrvIP | out-null ; 
         } CATCH {
             $ErrTrapd=$Error[0] ;
             $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
-            if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
-                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            } ;
+            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
         } ;
         #Remove-ItemProperty -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments' -Name 'SaveZoneInformation' -ErrorAction SilentlyContinue
         $pltrvIP=[ordered]@{
@@ -122,27 +105,21 @@ function Enable-OpenFileSecurityWarningTDO{
             erroraction = 'SilentlyContinue' ; 
         } ;        
         $smsg = "Remove-ItemProperty w`n$(($pltrvIP|out-string).trim())" ; 
-        if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
-            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
-        } ;
+        if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
         TRY{
             Remove-ItemProperty @pltrvIP | out-null ; 
         } CATCH {
             $ErrTrapd=$Error[0] ;
             $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
-            if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
-                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-            } ;
+            if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
         } ;
-    }
-#endregion ENABLE_OPENFILESECURITYWARNINGTDO ; #*------^ END FUNCTION Enable-OpenFileSecurityWarningTDO  ^------
-
+    } ; 
+    #endregion ENABLE_OPENFILESECURITYWARNING ; #*------^ END Enable-OpenFileSecurityWarningTDO ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQULH+LhiVBFdEVBF1KXp209FVG
-# sMagggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUkWmybty5T/eAVlRYdh9XCzRz
+# wv+gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -157,9 +134,9 @@ function Enable-OpenFileSecurityWarningTDO{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBR+bBJr
-# UG4h/Tfs7KNDkJHeGVeUwjANBgkqhkiG9w0BAQEFAASBgJkAAs/BlrbS2jo33sRj
-# YGY11xbGHZD44h+4z7HnvQM22aN4lWSSodixG41kKCCDGQG1He9Zvwj23PaYSzD6
-# XbpZL9ziGKEV3+qwId+NCx7Dlv6Amm8vhbFCszVySUBg/WcviV8eMDqr1pWCC788
-# QkDnvw4vqCXNLW9AyJXb/lzx
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSHU0o+
+# qUQ1MKl5A7fbyspCxPQbpTANBgkqhkiG9w0BAQEFAASBgEELwuuUl2LZbK6t02rZ
+# +bY5RrTWPZz9eLcc0tLxjkuwqeEYv++RVhwPWa7zsf9ZEu4DzuL2o/LjTx/+gI+e
+# Rf9DDISAdo104gPtb+AL9Gaa5mewboqBAFyeZCqJF56JLPHEy8LmBHeBb5+XC5nk
+# 2ySqFmr+iVy2CUYV0hxveydg
 # SIG # End signature block

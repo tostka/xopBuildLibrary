@@ -1,5 +1,8 @@
-﻿#region COMPARE_OBJECTSSIDEBYSIDE ; #*------v FUNCTION Compare-ObjectsSideBySide v------
-function Compare-ObjectsSideBySide{
+﻿# Compare-ObjectsSideBySide.ps1
+
+    #region COMPARE_OBJECTSSIDEBYSIDE ; #*------v Compare-ObjectsSideBySide v------
+    #if(-not(gi function:Compare-ObjectsSideBySide -ea 0)){
+        function Compare-ObjectsSideBySide{
             <#
             .SYNOPSIS
             Compare-ObjectsSideBySide() - Displays a pair of objects side-by-side comparatively in console
@@ -137,13 +140,13 @@ function Compare-ObjectsSideBySide{
                 New-Object PSObject -Property $properties ;
             } ;
         }
-#endregion COMPARE_OBJECTSSIDEBYSIDE ; #*------^ END FUNCTION Compare-ObjectsSideBySide  ^------
-
+    #}
+    #endregion COMPARE_OBJECTSSIDEBYSIDE ; #*------^ END Compare-ObjectsSideBySide ^------
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUHAhTEX1qCgC88ib/7dBrVApX
-# 60WgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU7JhfBAczle21NRRA2G2BpWVT
+# KC2gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -158,9 +161,9 @@ function Compare-ObjectsSideBySide{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTybToM
-# hs+y6untNb+aC0dmrWbgtzANBgkqhkiG9w0BAQEFAASBgA/3K/Fcf0fd1pvTUqz0
-# qgc2FhyGmX+65zOsLQCPaGmSf2mzLWQh3iNykSsE3DfKOXMHTkMysL/5El4CWZUk
-# AeCt1tWdzIAJpuO5hjQuJ8f1Sg+SZrB+dK1PUf/b+3tDd4OQff65SvIyGmv/kphl
-# 5e1l8p0VC1fY9zGFHhldaIR/
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQp2Ezc
+# BIBbvDiov9Z07ROGoncmGjANBgkqhkiG9w0BAQEFAASBgES7VzT08PnbxeyuylO0
+# qVPxrFczNJbHa43XFGhezk293qK4eGUy6y8e3NXBGbEXCNTl9geknzu6uYQHAIwS
+# 6A8FMT927L9Eua7tqITPmYzul+tifXcUE5vw0056Gnpi5tWedQX1CZ7DOzn1bhwW
+# AN6W9mOgPG2W0Uh5tzTxBUeG
 # SIG # End signature block

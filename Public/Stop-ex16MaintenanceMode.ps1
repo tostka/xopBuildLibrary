@@ -1,4 +1,7 @@
-﻿#region STOP_EX16MAINTENANCEMODE ; #*------v FUNCTION Stop-ex16MaintenanceMode v------
+﻿# Stop-ex16MaintenanceMode.ps1
+
+
+#region STOP_EX16MAINTENANCEMODE ; #*------v Stop-ex16MaintenanceMode v------
 function Stop-ex16MaintenanceMode{
         <#
         .SYNOPSIS
@@ -18,7 +21,6 @@ function Stop-ex16MaintenanceMode{
         AddedWebsite: https://github.com/PietroCiaccio/
         AddedTwitter: URL
         REVISIONS
-        * 2:35 PM 12/2/2025 spliced in re-import connect-xopLocalManagementShell code
         * 5:53 PM 8/16/2025 Stop-ex16MaintenanceMode: add Edge detection support; code to do the $isDAG test within the function (and not inherited)
         * 2:30 PM 3/26/2025 merge PietroCiaccio's Disable-EPMaintenanceMode with my updates under Start-ex16MaintenanceMode.ps1
         * 9:09 AM 3/26/2025 added ipsn post connect-ExchangeServer() call (wasn't including import/non-functional [headscratch]); beyond that, used wo issues on 1st of the Ex16 builds
@@ -99,47 +101,17 @@ function Stop-ex16MaintenanceMode{
                 [PSCustomObject]$Identity=$env:computername
         ) ; 
         BEGIN{
-            #region CONNECT_XOPLOCAL ; #*------v connect-XopLocal v------
-            $tcmdlet = 'Set-ServerComponentState' ;
-            $cmd = $null; $cmd = get-command $tcmdlet -erroraction 0 ;
-            if(-not $cmd){
-                if($xopconn = connect-XopLocalManagementShell){
-                    if($ExPSS = get-pssession | ? { $_.ComputerName -match "^$($env:computername)" -AND $_.ConfigurationName -eq 'Microsoft.Exchange' } | sort id -Descending | select -first 1 ){
-                        TRY{
-                            $cmd = $null; $cmd = get-command $tcmdlet -erroraction 0 ;
-                            if(-not $cmd){
-                                $smsg = "Missing $($cmdlet): re-importing PSSession..." ;
-                                if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
-                                    if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-                                    #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
-                                } ;
-                                $ExIPSS = Import-PSSession $ExPSS -allowclobber -ea STOP ;
-                            } ;
-                            $cmd = $null; $cmd = get-command 'Get-OrganizationConfig' -erroraction stop ;
-                            $smsg = "Connected to: $($expss.computername)" ;
-                            if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
-                                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level H1 } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-                                #Levels:Error|Warn|Info|H1|H2|H3|H4|H5|Debug|Verbose|Prompt|Success
-                            } ;
-                        } CATCH {
-                            $ErrTrapd=$Error[0] ;
-                            $smsg = "`n$(($ErrTrapd | fl * -Force|out-string).trim())" ;
-                            if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
-                                if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
-                            } ;
-                            BREAK ;
-                        } ;
-                    } ;
-                } else {
-                    $smsg = "NOT CONNECTED!"
+            if(-not (gcm Set-ServerComponentState -ea 0)){
+                if(connect-XopLocalManagementShell){
+                     write-host -foregroundcolor green "Connected" } 
+                else { 
+                    $smsg = "NOT CONNECTED!" ; 
                     if(gcm Write-MyWarning -ea 0){Write-MyWarning $smsg } else {
                         if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent}
                         else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
                     } ;
-                    BREAK ;
-                } ;
-            } ;
-            #endregion CONNECT_XOPLOCAL ; #*------^ END connect-XopLocal ^------
+                    BREAK} ;
+            } ; 
         } # BEG-E
         PROCESS{
             # Validate identity
@@ -320,13 +292,14 @@ function Stop-ex16MaintenanceMode{
         END {
         } ; 
     }
-#endregion STOP_EX16MAINTENANCEMODE ; #*------^ END FUNCTION Stop-ex16MaintenanceMode  ^------
+#endregion STOP_EX16MAINTENANCEMODE ; #*------^ END Stop-ex16MaintenanceMode ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUuudjnCzLZjuwebtWWWAfxUNF
-# JwOgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUDC7U5+rMiRThJxSpasEPXer6
+# GZegggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -341,9 +314,9 @@ function Stop-ex16MaintenanceMode{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQ7NsJq
-# wm40FjEW4hXt9IClweikZjANBgkqhkiG9w0BAQEFAASBgBmvABrn76954Ak2+7nv
-# aHdsd59DZsNLi54WXNFkip/nbudvq/Zdajw3hRQjd/JqwvpCMfZkztxNY0He+e5t
-# 6iJB076cwyTNMXwyt86VuUUluX1YjUjKjzoBdkW4BduXsRSUu+XmoIfUNtqDIELs
-# Mjq50KIwRhwJNZCmoYfUwADx
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRQYtQw
+# rwpfuCbMtO6BnKbajH2fNjANBgkqhkiG9w0BAQEFAASBgIJ2aWmGwsNmu4xSL1xa
+# gZ1QHVGU7WHqB4JPtw2pvhyfX5auBYe/eND7Ba9rVpjpunyMEwflCVNLAAVBHP/w
+# c8Yl86uuWX0i3m8vU1JDiPO8PelJdXzCMEKIH1RuEpCdDrNVLJ8vNT4WveqEGpSu
+# 8dRGTtpVwroF2MsQmFsPiVQy
 # SIG # End signature block

@@ -1,4 +1,7 @@
-﻿#region REPAIR_FILEENCODINGMIXED ; #*------v FUNCTION repair-FileEncodingMixed v------
+﻿# repair-FileEncodingMixed.ps1
+
+
+#region REPAIR_FILEENCODINGMIXED ; #*------v repair-FileEncodingMixed v------
 function repair-FileEncodingMixed {
         <#
         .SYNOPSIS
@@ -144,13 +147,14 @@ function repair-FileEncodingMixed {
             else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
         } ;  # END-E
     }
-#endregion REPAIR_FILEENCODINGMIXED ; #*------^ END FUNCTION repair-FileEncodingMixed  ^------
+#endregion REPAIR_FILEENCODINGMIXED ; #*------^ END repair-FileEncodingMixed ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUvv6eb6aA4vSdn7qpe7C/91c7
-# nm2gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUTudBlgEpVmbnBCuuq+kILOTV
+# hfWgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -165,9 +169,9 @@ function repair-FileEncodingMixed {
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQ7XR39
-# HwQ20I2z1kHweNZeOiQ9YTANBgkqhkiG9w0BAQEFAASBgHlEPAYPH3mOviFx2GiS
-# TGRRgfjFwhZYgfN5BsreskxdxRRqxtdsSuBiSzgiBbUtbz2nRa3ewMrRqpcZ6i1V
-# yZq1OMrbZI89ePOts9NopekX9Ijgm3yZs7XNOSEwLweaXM/KdIyvsUunzuEHYPwx
-# VbZTVouQpbWCOzN8PdBcUN+n
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBS6KY4x
+# 6S6JuuS5UU2h8EtA+6j4sTANBgkqhkiG9w0BAQEFAASBgEUBKyLSqJaGw8rILqVc
+# VnLRZoEwl35MY/ms842YjQOmHZzNs0a6Dr12GbmvXkxRHSMMVDVbqztrVcdNwtHt
+# 1J9Pgc4lDJVWZIZ7H07xfVqG1SD0GoI5alFY+j4dBvlufG1B2wJdfds1Xyw7rybI
+# D7dAgsWI3xY2D2xSCnt8HFW8
 # SIG # End signature block

@@ -1,4 +1,7 @@
-﻿#region ENABLE_UACTDO ; #*------v FUNCTION Enable-UACTDO v------
+﻿# Enable-UACTDO.ps1
+
+
+#region ENABLE_UACTDO ; #*------v Enable-UACTDO v------
 function Enable-UACTDO{
         <#
         .SYNOPSIS
@@ -54,13 +57,14 @@ function Enable-UACTDO{
             if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level WARN -Indent} else{ write-WARNING "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; 
         } ;     
     }
-#endregion ENABLE_UACTDO ; #*------^ END FUNCTION Enable-UACTDO  ^------
+#endregion ENABLE_UACTDO ; #*------^ END Enable-UACTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU9kdXR2G2r4q7VyhOb8DxQSuf
-# Am6gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUE1jeaw7yprO1N0NHxBrAvWe2
+# GGSgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -75,9 +79,9 @@ function Enable-UACTDO{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQh1FmY
-# Gy7ZFK1JHhBWyGZI+sW/mjANBgkqhkiG9w0BAQEFAASBgE7vpxyLnxauLrWPGHAq
-# J/7nKSm4rwxlISJFG4odxDtBT18PVINuQb7UoqtVqDmOVAE/mR1qqYPIGRpv8Zi6
-# fIHs/CbWDwmW4Lru2v59E8etxQNTxG6bdnIFWlUcZV9RtcbcxFfJBEwQLs15cTaJ
-# JoQTFuHjbqYpVIS4BwElYqaX
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBT1atpx
+# rXJz7jTiH3dbWQ20cyskFzANBgkqhkiG9w0BAQEFAASBgDJsbWWjweUZzMJr9asm
+# dfjOby0zDO4L9uS/BeKFpuWUuCoNyBkEslX6KIBCpKV8HeVSNJDz0qaKEzAMSA2K
+# O7YZhDYLf+YK6ySp++at5VCG8PFaRTCCjZpi2vcPYzo4X3qvcSl7Eqsk7GqFHnPO
+# nkluR8VNfsXRPRuIPbTHLB+x
 # SIG # End signature block

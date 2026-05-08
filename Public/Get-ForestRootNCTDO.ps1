@@ -1,4 +1,7 @@
-﻿#region GET_FORESTROOTNCTDO ; #*------v FUNCTION Get-ForestRootNCTDO v------
+﻿# Get-ForestRootNCTDO.ps1
+
+
+#region GET_FORESTROOTNCTDO ; #*------v Get-ForestRootNCTDO v------
 function Get-ForestRootNCTDO{
         <#
         .SYNOPSIS
@@ -18,6 +21,7 @@ function Get-ForestRootNCTDO{
         AddedWebsite: http://eightwone.com
         AddedTwitter: URL        
         REVISIONS
+        * 8:34 PM 3/26/2026 move vnet -> vad
         * 10:42 AM 10/17/2025 updated CBH to indicate format of the DN returned.
         * 1:14 PM 9/17/2025 port to vnet from xopBuildLibrary; add CBH, and Adv Function specs
         .DESCRIPTION
@@ -41,13 +45,14 @@ function Get-ForestRootNCTDO{
         PARAM() ;
         return ([ADSI]'LDAP://RootDSE').rootDomainNamingContext.toString()
     }
-#endregion GET_FORESTROOTNCTDO ; #*------^ END FUNCTION Get-ForestRootNCTDO  ^------
+#endregion GET_FORESTROOTNCTDO ; #*------^ END Get-ForestRootNCTDO ^------
+
 
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUCxGXJ+v3tzdi/rrC9WuAoD6A
-# +7mgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUUNlPI3EQiY4pLDjiW3wyyit3
+# +fKgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -62,9 +67,9 @@ function Get-ForestRootNCTDO{
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTFfSY6
-# h4cuIFogs4a0hlGTN/J4hTANBgkqhkiG9w0BAQEFAASBgAXgEe/oJ2/FAIhRChif
-# gRbDY0ZnVmfpycVzsNao0i+5Ne7ZdNDd5DjdChpFE11c33wc4AV/zByA7In7yPyO
-# ZP4mrv8z7mYGjaCKVONZSaTe4WEt5Q0iCgvkH9ycd9X53+NVgaj/oqCIQM6EgDUh
-# kSowqtpk7C40mittLn1GHe0V
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSAbPvT
+# rE/LmqaCrsmOMoghSECX3jANBgkqhkiG9w0BAQEFAASBgBQD/2/QWWEhkNcKSZHI
+# fVB0Gs0/OALq4Miu4TQ15yBkfbQACLkgZWW/fegE8plgTIEeWuvJ/6a55pzgQoIE
+# RMhWVugFpKQb1jFvaFAAgHiC6XBf681p+vIFsOeKahHcg8foSX83VVbSFb88+EXA
+# jb5SHCIQERCsi9uBCK87rRnu
 # SIG # End signature block
