@@ -18,6 +18,7 @@ function show-ExchangeSetupLogSummary{
         AddedWebsite: URL
         AddedTwitter: URL
         REVISIONS
+        # 9:18 AM 7/8/2026 update $mts, stop stripping boolean:$false items
         * 10:45 AM 8/6/2025 added write-myOutput|Warning|Verbose support (for xopBuildLibrary/install-Exchange15.ps1 compat) 
         * 4:32 PM 7/22/2025 added Toro-lab to the domain block to permit it to run there
         * 11:37 AM 7/16/2025 add: -passthru; added cmdline parsing & reporting, per session.
@@ -309,7 +310,7 @@ function show-ExchangeSetupLogSummary{
                 if($VerbosePreference -eq 'Continue'){if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level VERBOSE }
                 else{ write-verbose "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ; } ;
             } ;
-            $mts = $pltRVEnv.GetEnumerator() |?{$_.value -eq $null} ; $mts |%{$pltRVEnv.remove($_.Name)} ; rv mts -ea 0 -whatif:$false -confirm:$false; 
+            $mts = $pltRVEnv.GetEnumerator() |?{ $_.value -isnot [boolean] -AND (($_.value -eq $null) -OR ($_.value -eq '') -OR ($_.value.length -eq 0))} ; $mts |%{$pltRVEnv.remove($_.Name)} ; rv mts -ea 0 -whatif:$false -confirm:$false; 
             $smsg = "resolve-EnvironmentTDO w`n$(($pltRVEnv|out-string).trim())" ; 
             if(gcm Write-MyOutput -ea 0){Write-MyOutput $smsg } else {
                 if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info }

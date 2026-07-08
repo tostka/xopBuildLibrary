@@ -21,6 +21,7 @@
             AddedWebsite: URL
             AddedTwitter: URL
             REVISIONS
+            # 9:18 AM 7/8/2026 update $mts, stop stripping boolean:$false items
             * 2:35 PM 2/26/2026 added rem'd exist tests
             * 10:45 AM 8/6/2025 added write-myOutput|Warning|Verbose support (for xopBuildLibrary/install-Exchange15.ps1 compat)
             * 2:58 PM 7/17/2025 updated CBH;  hybrid with prexisting vx10\test-LocalExchangeInfoTDO, combined best ideas from both; ren (again) to match existing: test-xopExchangeLocalInstallTDO -> test-LocalExchangeInfoTDO()
@@ -362,7 +363,9 @@
             } ;
             END {
                 # clean out null/empty value props (return only populated props)
-                $mts = $hSummary.GetEnumerator() | ? { ($null -eq $_.value) -OR ($_.value -eq '') } ; $mts | foreach-object { $hSummary.remove($_.Name) } ; remove-variable mts -ea 0 ;
+                #$mts = $hSummary.GetEnumerator() | ? { ($null -eq $_.value) -OR ($_.value -eq '') } ; $mts | foreach-object { $hSummary.remove($_.Name) } ; remove-variable mts -ea 0 ;
+                # 9:18 AM 7/8/2026 update $mts, stop stripping boolean:$false items
+                $mts = $hSummary.GetEnumerator() |?{ $_.value -isnot [boolean] -AND (($_.value -eq $null) -OR ($_.value -eq '') -OR ($_.value.length -eq 0))} ; $mts | foreach-object { $hSummary.remove($_.Name) } ; remove-variable mts -ea 0 ;
                 [pscustomobject]$hSummary | write-output
             }
         }        

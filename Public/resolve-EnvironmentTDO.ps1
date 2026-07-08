@@ -21,6 +21,7 @@ if (-not(gi function:resolve-EnvironmentTDO -ea 0)) {
             AddedWebsite: 
             AddedTwitter: URL
             REVISION
+            * 9:27 AM 7/8/2026 cbh update, $mts filter fix
             * 11:20 AM 9/17/2025 removed write-my* calls: implemented support in vio\write-log() instead (avoids all this manual updating)
             * 2:39 PM 7/17/2025 removed commented code; updated CBH to restore removed details, and to provide demo outputs; added series of examples for common usage
             * 4:44 PM 5/23/2025 updated the splats to psv2/psv3 support (dyn build; prev was psv3 only)
@@ -137,7 +138,7 @@ if (-not(gi function:resolve-EnvironmentTDO -ea 0)) {
             PS>     verbose = [boolean]($PSBoundParameters['Verbose'] -eq $true) ; 
             PS> } ;
             PS> write-verbose "(Purge no value keys from splat)" ; 
-            PS> $mts = $pltRVEnv.GetEnumerator() |?{$_.value -eq $null} ; $mts |%{$pltRVEnv.remove($_.Name)} ; rv mts -ea 0 -whatif:$false -confirm:$false; 
+            PS> $mts = $pltRVEnv.GetEnumerator() |?{ $_.value -isnot [boolean] -AND (($_.value -eq $null) -OR ($_.value -eq '') -OR ($_.value.length -eq 0))} ; $mts |%{$pltRVEnv.remove($_.Name)} ; rv mts -ea 0 -whatif:$false -confirm:$false; 
             PS> $smsg = "resolve-EnvironmentTDO w`n$(($pltRVEnv|out-string).trim())" ; 
             PS> if ($logging) { Write-Log -LogContent $smsg -Path $logfile -useHost -Level Info } else{ write-host -foregroundcolor green "$((get-date).ToString('HH:mm:ss')):$($smsg)" } ;
             PS> if(get-command resolve-EnvironmentTDO -ea STOP){}ELSE{
