@@ -20,6 +20,7 @@
             AddedWebsite: https://www.google.com/search?client=firefox-b-1-d&q=powershell+convert+exchange+admindisplayversion+to+semantic+version
             AddedTwitter: URL
             REVISIONS
+            * 11:09 AM 8/31/2026 fixed cbh demo param typo
             * 12:10 PM 12/2/2025 revised to named caps;  init version
 
             .DESCRIPTION
@@ -44,7 +45,7 @@
 
                 15.1.2507.6
 
-            PS> $VersInfo = Resolve-xopBuildSemVersToTextNameTDO -Version $VersionNum ; 
+            PS> $VersInfo = Resolve-xopBuildSemVersToTextNameTDO -AdminDisplayVersion $VersionNum ; 
             PS> $VersInfo ; 
 
                 ProductName      : Exchange Server 2016 CU23 (2022H1)
@@ -94,28 +95,3 @@
     } ; 
     #endregion CONVERT_XOPADMINDISPLAYVERSIONTDO ; #*------^ END Convert-xopAdminDisplayVersionTDO ^------
     
-# SIG # Begin signature block
-# MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
-# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUY5gSgks1BvhUKZnOUISjlZug
-# 4QOgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
-# MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
-# Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
-# ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
-# a+NnFYNRPPa8Bnm071ohGe27jNWKPVUbDfd0OY2sqCBQCEFVb5pqcIECRRnlhN5H
-# +EEJmm2x9AU0uS7IHxHeUo8fkW4vm49adkat5gAoOZOwbuNntBOAJy9LCyNs4F1I
-# KKphP3TyDwe8XqsEVwB2m9FPAgMBAAGjdjB0MBMGA1UdJQQMMAoGCCsGAQUFBwMD
-# MF0GA1UdAQRWMFSAEL95r+Rh65kgqZl+tgchMuKhLjAsMSowKAYDVQQDEyFQb3dl
-# clNoZWxsIExvY2FsIENlcnRpZmljYXRlIFJvb3SCEGwiXbeZNci7Rxiz/r43gVsw
-# CQYFKw4DAh0FAAOBgQB6ECSnXHUs7/bCr6Z556K6IDJNWsccjcV89fHA/zKMX0w0
-# 6NefCtxas/QHUA9mS87HRHLzKjFqweA3BnQ5lr5mPDlho8U90Nvtpj58G9I5SPUg
-# CspNr5jEHOL5EdJFBIv3zI2jQ8TPbFGC0Cz72+4oYzSxWpftNX41MmEsZkMaADGC
-# AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
-# Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
-# AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTXOEDM
-# gDcjSYWaR5qpIwXha/JqzDANBgkqhkiG9w0BAQEFAASBgB3gsM+7atNW+MeIcjbV
-# EEmJIlm5NpLvxHU+jOgbuM1sdVhykvFGabqLYmgVWQKUfDgNrh9+15x1+RVhkqB7
-# E9aQsih6hopdYTlj4OkdN+3UtzsTQ0t62MINzRc+Gt1v0D2SJ0QJCeS5D/1hbiy2
-# X23unH0mdcGOdEB7YtaS797H
-# SIG # End signature block
