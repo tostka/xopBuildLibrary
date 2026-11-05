@@ -78,7 +78,7 @@
             $prpCert = 'Issuer','Subject','NotBefore','NotAfter','HasPrivateKey','Thumbprint',@{Name='PsPath';Expression={$_.pspath.replace('Microsoft.PowerShell.Security\Certificate::','') }} 
             # no return the entire 509 cert object, match the return of an import-certificate command
             TRY{
-                Add-Type -AssemblyName System.Security ;
+                TRY{Add-Type -AssemblyName System.Security}CATCH{} ;
                 #$CertStore = New-Object System.Security.Cryptography.X509Certificates.X509Store -ArgumentList  "\\$($Computername)\$($TargetCertStore)", $CertStoreLocation ;                
                 $CertStore = New-Object System.Security.Cryptography.X509Certificates.X509Store($TargetCertStore, $CertStoreLocation)
                 $CertStore.Open('ReadWrite');
@@ -134,8 +134,8 @@
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUi6d01vmTCgPY5HCASlAicpaC
-# lG6gggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU6DejuPCDGVV9C93kjDoRSB6/
+# jkmgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -150,9 +150,9 @@
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQdjCA0
-# lgcpI9i7MrJyi2k26BgErTANBgkqhkiG9w0BAQEFAASBgKdHkY/SC0no+tzl3iIf
-# mBlN+6PxxmsMUXaRthACWSp9hMe9nc61aDpIG9YVGciPd+vZnfK9gubh9hM1SxKi
-# OrwkRKK4ZZKDjVMq+h0YPzfwhgQxkQvc8J4JaT3cEUvK5KP9jJTl1dpRlpOTGatQ
-# Tq9h8KkY+R02PQx8NtP3C9NU
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRT21lO
+# vMVO0cmhEe7ToKPOVROGLTANBgkqhkiG9w0BAQEFAASBgHu64r40yogTk8s53+nH
+# XaYFAuYVoq4w0vNYZcL1dJmrDSj9l2uW1kD7yi4OiZkKuVWLOIac/giKouloNuFh
+# QNxqLxo1v5SoAaPQumuOGjEmrVtS5h7aaG87iY0R1P5uyCvT7DKxZDqX3REdweBP
+# fqt/h+T5GcVKU82r4pNI3uUy
 # SIG # End signature block
